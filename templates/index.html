@@ -133,6 +133,141 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helv
 .interest-option:hover { border-color: var(--primary); background: rgba(102, 126, 234, 0.05); }
 .interest-option.selected { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: #fff; border-color: var(--primary); box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); }
 .rating-item { padding: 16px; border-bottom: 1px solid var(--gray-200); }
+
+/* ========== Match Loading & Result ========== */
+.match-loading-page { min-height: 100vh; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.match-loading-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 20% 20%, rgba(240, 147, 251, 0.3), transparent 40%), radial-gradient(circle at 80% 80%, rgba(102, 126, 234, 0.4), transparent 40%); }
+.match-loading-content { position: relative; z-index: 1; text-align: center; padding: 40px; color: #fff; width: 100%; }
+.match-loading-avatar { position: relative; width: 120px; height: 120px; margin: 0 auto 30px; }
+.match-loading-avatar-inner { width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; font-size: 48px; border: 3px solid rgba(255,255,255,0.5); z-index: 2; position: relative; }
+.match-loading-ring { position: absolute; top: 50%; left: 50%; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); transform: translate(-50%, -50%); animation: matchPulse 2s ease-out infinite; }
+.match-loading-ring.ring1 { width: 120px; height: 120px; animation-delay: 0s; }
+.match-loading-ring.ring2 { width: 160px; height: 160px; animation-delay: 0.5s; }
+.match-loading-ring.ring3 { width: 200px; height: 200px; animation-delay: 1s; }
+@keyframes matchPulse { 0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; } }
+.match-loading-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
+.match-loading-tip { font-size: 15px; opacity: 0.9; margin-bottom: 20px; }
+.match-loading-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 40px; }
+.match-loading-dots span { width: 10px; height: 10px; border-radius: 50%; background: #fff; animation: bounceDot 1.4s ease-in-out infinite; }
+.match-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.match-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounceDot { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-10px); } }
+.match-cancel-btn { background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.4); padding: 12px 36px; border-radius: 25px; font-size: 15px; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; }
+.match-cancel-btn:hover { background: rgba(255,255,255,0.3); }
+
+.match-result-page { min-height: 100vh; position: relative; overflow: hidden; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0; }
+.match-result-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 10%, rgba(240, 147, 251, 0.4), transparent 40%), radial-gradient(circle at 70% 30%, rgba(255, 164, 228, 0.3), transparent 50%); }
+.match-result-content { position: relative; z-index: 1; width: 100%; padding: 60px 20px 0; }
+.match-result-success { text-align: center; color: #fff; font-size: 28px; font-weight: 700; margin-bottom: 30px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); animation: bounceIn 0.6s ease; }
+@keyframes bounceIn { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
+.match-result-avatar-wrap { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: -30px; position: relative; z-index: 2; }
+.match-result-avatar { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #fff; border: 4px solid rgba(255,255,255,0.9); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+.match-result-avatar.me { background: linear-gradient(135deg, #667eea, #764ba2); }
+.match-result-heart { font-size: 36px; animation: heartBeat 1s ease-in-out infinite; }
+@keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+.match-result-card { background: #fff; border-radius: 30px 30px 0 0; padding: 50px 24px 30px; margin: 0 -20px; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); }
+.match-result-name { font-size: 24px; font-weight: 700; color: #1f2937; text-align: center; margin-bottom: 6px; }
+.match-result-school { text-align: center; color: #6b7280; font-size: 14px; margin-bottom: 20px; }
+.match-result-match-rate { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 24px; }
+.match-rate-ring { width: 70px; height: 70px; border-radius: 50%; background: conic-gradient(#667eea 0% 75%, #e5e7eb 75% 100%); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #667eea; }
+.match-rate-ring::before { content: ''; position: absolute; width: 55px; height: 55px; border-radius: 50%; background: #fff; }
+.match-rate-ring span { position: relative; z-index: 1; }
+.match-rate-text { font-size: 16px; font-weight: 600; color: #1f2937; }
+.match-result-interests { margin-bottom: 24px; }
+.match-result-label { font-size: 14px; font-weight: 600; color: #6b7280; margin-bottom: 10px; }
+.match-result-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.match-result-actions { display: flex; gap: 12px; }
+.match-result-btn-secondary { flex: 1; }
+.match-result-btn-primary { flex: 1.5; }
+
+/* ========== Chat UI ========== */
+.chat-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #fff; border-bottom: 1px solid var(--gray-200); position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+.chat-header-left { display: flex; align-items: center; gap: 12px; }
+.chat-back-btn { width: 36px; height: 36px; border-radius: 50%; border: none; background: #f3f4f6; color: #374151; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.chat-back-btn:hover { background: #e5e7eb; }
+.chat-header-avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; }
+.chat-header-info { display: flex; flex-direction: column; gap: 2px; }
+.chat-header-name { font-size: 16px; font-weight: 600; color: #1f2937; }
+.chat-header-status { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 6px; }
+.chat-status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.chat-status-dot.online { background: #10b981; box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); animation: statusPulse 2s ease-in-out infinite; }
+.chat-status-dot.ended { background: #9ca3af; }
+@keyframes statusPulse { 0%, 100% { box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2); } 50% { box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1); } }
+.chat-header-right { display: flex; gap: 8px; }
+.chat-action-btn { padding: 8px 14px; border-radius: 20px; border: 1px solid #e5e7eb; background: #fff; font-size: 13px; color: #6b7280; cursor: pointer; transition: all 0.2s ease; }
+.chat-action-btn:hover { background: #f9fafb; border-color: #d1d5db; }
+
+.chat-container { display: flex; flex-direction: column; height: calc(100vh - 68px); background: #f0f2f5; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px; }
+.chat-date-divider { text-align: center; margin: 16px 0; }
+.chat-date-divider span { display: inline-block; padding: 6px 14px; background: rgba(0,0,0,0.08); color: #fff; font-size: 12px; border-radius: 12px; backdrop-filter: blur(10px); }
+
+.msg-row { display: flex; gap: 8px; margin-bottom: 12px; align-items: flex-end; }
+.msg-row.msg-me { justify-content: flex-end; }
+.msg-row.msg-system { justify-content: center; }
+.msg-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 600; flex-shrink: 0; cursor: pointer; }
+.msg-bubble { max-width: 70%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.5; word-wrap: break-word; position: relative; }
+.msg-bubble-other { background: #fff; color: #1f2937; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+.msg-bubble-me { background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; border-bottom-right-radius: 4px; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3); }
+.msg-system-text { padding: 8px 16px; background: rgba(0,0,0,0.08); color: #fff; font-size: 12px; border-radius: 14px; backdrop-filter: blur(10px); }
+
+.chat-input-area { padding: 12px 16px; background: #fff; border-top: 1px solid var(--gray-200); }
+.chat-input-wrap { display: flex; align-items: center; gap: 10px; }
+.chat-input-emoji { width: 40px; height: 40px; border-radius: 50%; border: none; background: #f3f4f6; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s ease; }
+.chat-input-emoji:hover { background: #e5e7eb; }
+.chat-input-field { flex: 1; padding: 12px 18px; border: 2px solid #e5e7eb; border-radius: 25px; font-size: 15px; outline: none; transition: all 0.3s ease; background: #f9fafb; }
+.chat-input-field:focus { border-color: #667eea; background: #fff; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+.chat-send-btn { padding: 12px 24px; border-radius: 25px; border: none; background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; }
+.chat-send-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4); }
+.chat-send-btn:active { transform: translateY(0); }
+.chat-input-area.ended { padding: 16px; }
+.chat-rating-btn { width: 100%; border-radius: 25px; padding: 14px; font-size: 16px; }
+
+.chat-emoji-panel { background: #fff; border-bottom: 1px solid var(--gray-200); padding: 12px 16px; max-height: 200px; overflow-y: auto; }
+.chat-emoji-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 4px; }
+.chat-emoji-item { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 22px; cursor: pointer; border-radius: 8px; transition: all 0.15s ease; }
+.chat-emoji-item:hover { background: #f3f4f6; transform: scale(1.2); }
+
+/* ========== User Profile Detail ========== */
+.profile-detail-page { min-height: 100vh; background: #f3f4f6; padding-bottom: 30px; }
+.profile-detail-header { padding: 50px 20px 40px; text-align: center; position: relative; color: #fff; border-radius: 0 0 40px 40px; }
+.profile-back-btn { position: absolute; top: 20px; left: 16px; width: 36px; height: 36px; border-radius: 50%; border: none; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.profile-detail-avatar { width: 80px; height: 80px; border-radius: 50%; background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; border: 3px solid rgba(255,255,255,0.5); }
+.profile-detail-name { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+.profile-detail-school { font-size: 14px; opacity: 0.9; }
+
+.profile-detail-content { padding: 16px; margin-top: -20px; position: relative; z-index: 1; }
+.profile-card { background: #fff; border-radius: 16px; padding: 20px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+.profile-card-title { font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.profile-card-title::before { content: ''; width: 4px; height: 16px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 2px; }
+
+.profile-score-wrap { display: flex; align-items: center; gap: 20px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #f3f4f6; }
+.profile-score-num { font-size: 48px; font-weight: 700; color: #667eea; line-height: 1; }
+.profile-score-right { flex: 1; }
+.profile-score-stars { font-size: 20px; color: #fbbf24; margin-bottom: 6px; }
+.profile-score-count { font-size: 13px; color: #6b7280; }
+
+.rating-distribution { display: flex; flex-direction: column; gap: 8px; }
+.rating-dist-row { display: flex; align-items: center; gap: 10px; }
+.rating-dist-star { width: 30px; font-size: 13px; color: #6b7280; font-weight: 500; }
+.rating-dist-bar { flex: 1; height: 8px; background: #f3f4f6; border-radius: 4px; overflow: hidden; }
+.rating-dist-fill { height: 100%; background: linear-gradient(90deg, #fbbf24, #f59e0b); border-radius: 4px; transition: width 0.5s ease; }
+.rating-dist-count { width: 24px; font-size: 13px; color: #9ca3af; text-align: right; }
+
+.profile-interests { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.profile-ratings-list { display: flex; flex-direction: column; gap: 16px; }
+.profile-rating-item { padding: 16px; background: #f9fafb; border-radius: 12px; }
+.profile-rating-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.profile-rating-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 600; }
+.profile-rating-info { flex: 1; }
+.profile-rating-name { font-size: 14px; font-weight: 600; color: #1f2937; margin-bottom: 2px; }
+.profile-rating-stars { font-size: 12px; color: #fbbf24; }
+.profile-rating-comment { font-size: 14px; color: #4b5563; line-height: 1.6; padding-left: 48px; }
+.profile-empty-ratings { text-align: center; padding: 30px 20px; color: #9ca3af; }
+.profile-empty-ratings .empty-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.5; }
+.profile-empty-ratings p { font-size: 15px; margin-bottom: 6px; color: #6b7280; }
+.profile-empty-ratings span { font-size: 13px; }
 .rating-item:last-child { border-bottom: none; }
 .rating-stars { color: #fbbf24; font-size: 16px; margin-bottom: 6px; letter-spacing: 2px; }
 .rating-comment { font-size: 14px; color: var(--gray-700); line-height: 1.6; }
@@ -143,6 +278,133 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helv
 .back-btn { background: none; border: none; color: inherit; font-size: 24px; cursor: pointer; padding: 8px; margin: -8px; }
 .section-title { font-size: 18px; font-weight: 700; color: var(--gray-800); margin: 20px 16px 12px; }
 .section-title:first-of-type { margin-top: 8px; }
+
+/* ========== 3-Step Register Styles ========== */
+.reg-progress-wrap { padding: 0 20px 16px; background: var(--gray-100); }
+.reg-progress-bar { display: flex; align-items: center; gap: 8px; }
+.reg-progress-step { flex: 1; height: 6px; background: var(--gray-300); border-radius: 3px; transition: all 0.4s ease; }
+.reg-progress-step.active { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); }
+.reg-progress-text { font-size: 12px; color: var(--gray-500); margin-top: 8px; text-align: center; }
+.reg-page { display: none; }
+.reg-page.active { display: block; animation: fadeIn 0.3s ease; }
+.reg-title { padding: 8px 20px 4px; }
+.reg-title h1 { font-size: 22px; font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+.reg-title p { font-size: 14px; color: var(--gray-500); }
+.reg-content { padding: 12px 20px 100px; }
+.reg-avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+.reg-avatar-wrap { position: relative; width: 100px; height: 100px; margin-bottom: 12px; }
+.reg-avatar-img { width: 100%; height: 100%; border-radius: 50%; background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; border: 3px solid rgba(102,126,234,0.2); }
+.reg-avatar-change { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; background: var(--primary); border: 3px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: #fff; }
+.reg-avatar-hint { font-size: 12px; color: var(--gray-500); }
+.reg-nickname-wrap { position: relative; }
+.reg-nickname-random { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: rgba(102,126,234,0.1); color: var(--primary); border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; }
+.reg-grade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.reg-grade-option { padding: 12px; border: 2px solid var(--gray-300); border-radius: 12px; text-align: center; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; background: #fff; }
+.reg-grade-option:hover { border-color: var(--primary); }
+.reg-grade-option.selected { border-color: var(--primary); background: rgba(102,126,234,0.1); color: var(--primary); }
+.reg-interest-category { margin-bottom: 20px; }
+.reg-category-title { font-size: 14px; font-weight: 600; color: var(--gray-800); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.reg-tag-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.reg-tag-item { padding: 10px 4px; border: 2px solid var(--gray-300); border-radius: 10px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; background: #fff; position: relative; }
+.reg-tag-item:hover { border-color: var(--primary); }
+.reg-tag-item.selected { border-color: var(--primary); background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: #fff; box-shadow: 0 4px 12px rgba(102,126,234,0.3); }
+.reg-tag-item .reg-tag-check { position: absolute; top: 2px; right: 4px; font-size: 10px; display: none; }
+.reg-tag-item.selected .reg-tag-check { display: block; }
+.reg-pref-card { background: var(--gray-100); border: 1px solid var(--gray-200); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+.reg-pref-card-title { font-size: 16px; font-weight: 700; color: var(--gray-800); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.reg-pref-card-title .reg-tag-badge { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 20px; }
+.reg-pref-card-title .reg-tag-badge.weak { background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%); }
+.reg-pref-row { margin-bottom: 16px; }
+.reg-pref-row:last-child { margin-bottom: 0; }
+.reg-pref-row-label { font-size: 13px; font-weight: 600; color: var(--gray-800); margin-bottom: 10px; }
+.reg-pref-row-hint { font-size: 12px; color: var(--gray-500); margin-bottom: 10px; }
+.reg-radio-group { display: flex; flex-direction: column; gap: 8px; }
+.reg-radio-option { display: flex; align-items: center; padding: 12px 14px; border: 2px solid var(--gray-200); border-radius: 10px; cursor: pointer; transition: all 0.3s ease; background: #fff; }
+.reg-radio-option:hover { border-color: var(--primary); }
+.reg-radio-option.selected { border-color: var(--primary); background: rgba(102,126,234,0.08); }
+.reg-radio-circle { width: 20px; height: 20px; border: 2px solid var(--gray-300); border-radius: 50%; margin-right: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s ease; }
+.reg-radio-option.selected .reg-radio-circle { border-color: var(--primary); background: var(--primary); }
+.reg-radio-circle::after { content: ''; width: 8px; height: 8px; background: #fff; border-radius: 50%; display: none; }
+.reg-radio-option.selected .reg-radio-circle::after { display: block; }
+.reg-radio-text { font-size: 14px; color: var(--gray-800); }
+.reg-radio-option.selected .reg-radio-text { font-weight: 600; color: var(--primary); }
+.reg-bottom-action { position: fixed; bottom: 0; left: 0; right: 0; max-width: 430px; margin: 0 auto; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-top: 1px solid var(--gray-200); padding: 16px 20px 28px; z-index: 100; }
+.reg-bottom-action .btn { width: 100%; }
+.reg-bottom-action .btn-secondary { background: transparent; color: var(--gray-500); margin-top: 10px; font-size: 14px; border: none; }
+.reg-bottom-action .btn-hint { text-align: center; font-size: 12px; color: var(--gray-500); margin-top: 10px; }
+.reg-success-page { display: none; text-align: center; padding: 60px 20px; }
+.reg-success-page.active { display: block; animation: fadeIn 0.5s ease; }
+.reg-success-icon { width: 80px; height: 80px; background: linear-gradient(135deg, var(--success) 0%, #38a169 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(72,187,120,0.3); }
+.reg-skip-all { text-align: center; padding: 20px; }
+.reg-skip-all-btn { background: none; border: none; color: var(--primary); font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: underline; }
+.reg-selected-count { text-align: center; font-size: 13px; color: var(--primary); font-weight: 600; margin-top: 8px; }
+
+/* ========== Setup Page Styles ========== */
+.setup-page { min-height: 100vh; background: #f8f9fc; }
+.setup-header { padding: 20px 20px 12px; background: #fff; position: sticky; top: 0; z-index: 10; }
+.setup-back-btn { background: none; border: none; font-size: 20px; color: #6b7280; cursor: pointer; padding: 4px; margin: -4px; }
+.setup-progress-wrap { padding: 0 20px 16px; background: #fff; }
+.setup-progress-bar { display: flex; align-items: center; gap: 8px; }
+.setup-progress-step { flex: 1; height: 6px; background: #e5e7eb; border-radius: 3px; transition: all 0.4s ease; }
+.setup-progress-step.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+.setup-progress-text { font-size: 12px; color: #6b7280; margin-top: 8px; text-align: center; }
+.setup-page-title { padding: 8px 20px 4px; }
+.setup-page-title h1 { font-size: 22px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+.setup-page-title p { font-size: 14px; color: #6b7280; }
+.setup-content { padding: 12px 20px 120px; }
+.setup-avatar-section { display: flex; flex-direction: column; align-items: center; margin-bottom: 24px; }
+.setup-avatar-wrap { position: relative; width: 100px; height: 100px; margin-bottom: 12px; }
+.setup-avatar-img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; border: 3px solid #e0e7ff; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; }
+.setup-avatar-change { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; background: #667eea; border: 3px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: #fff; }
+.setup-avatar-hint { font-size: 12px; color: #6b7280; }
+.setup-nickname-wrap { position: relative; }
+.setup-nickname-random { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: #e0e7ff; color: #667eea; border: none; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; }
+.setup-select-wrap { position: relative; }
+.setup-select-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #6b7280; font-size: 12px; }
+.setup-grade-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.setup-grade-option { padding: 12px; border: 2px solid #e5e7eb; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; background: #fff; }
+.setup-grade-option:hover { border-color: #667eea; }
+.setup-grade-option.selected { border-color: #667eea; background: #e0e7ff; color: #667eea; }
+.setup-interest-category { margin-bottom: 20px; }
+.setup-category-title { font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+.setup-category-icon { font-size: 16px; }
+.setup-tag-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.setup-tag-item { padding: 10px 4px; border: 2px solid #e5e7eb; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; background: #fff; position: relative; }
+.setup-tag-item:hover { border-color: #667eea; }
+.setup-tag-item.selected { border-color: #667eea; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
+.setup-tag-item .setup-tag-check { position: absolute; top: 2px; right: 2px; font-size: 10px; display: none; }
+.setup-tag-item.selected .setup-tag-check { display: block; }
+.setup-tag-item .setup-pref-btn { display: none; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: #f59e0b; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 8px; white-space: nowrap; }
+.setup-tag-item.selected .setup-pref-btn { display: block; }
+.setup-pref-card { background: #f8f9fc; border: 1px solid #e5e7eb; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+.setup-pref-card-title { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.setup-pref-card-title .setup-tag-badge { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; font-size: 12px; padding: 4px 10px; border-radius: 20px; }
+.setup-pref-row { margin-bottom: 16px; }
+.setup-pref-row:last-child { margin-bottom: 0; }
+.setup-pref-row-label { font-size: 13px; font-weight: 600; color: #1a1a2e; margin-bottom: 10px; }
+.setup-pref-row-hint { font-size: 12px; color: #6b7280; margin-bottom: 10px; }
+.setup-radio-group { display: flex; flex-direction: column; gap: 8px; }
+.setup-radio-option { display: flex; align-items: center; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; background: #fff; }
+.setup-radio-option:hover { border-color: #667eea; }
+.setup-radio-option.selected { border-color: #667eea; background: #e0e7ff; }
+.setup-radio-circle { width: 20px; height: 20px; border: 2px solid #e5e7eb; border-radius: 50%; margin-right: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s ease; }
+.setup-radio-option.selected .setup-radio-circle { border-color: #667eea; background: #667eea; }
+.setup-radio-circle::after { content: ''; width: 8px; height: 8px; background: #fff; border-radius: 50%; display: none; }
+.setup-radio-option.selected .setup-radio-circle::after { display: block; }
+.setup-radio-text { font-size: 14px; color: #1a1a2e; }
+.setup-radio-option.selected .setup-radio-text { font-weight: 600; color: #667eea; }
+.setup-bottom-action { position: fixed; bottom: 0; left: 0; right: 0; max-width: 430px; margin: 0 auto; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-top: 1px solid #e5e7eb; padding: 16px 20px 24px; z-index: 100; }
+.setup-step-page { display: none; }
+.setup-step-page.active { display: block; animation: fadeIn 0.3s ease; }
+.setup-skip-all { text-align: center; padding: 20px; }
+.setup-skip-all-btn { background: none; border: none; color: #667eea; font-size: 14px; font-weight: 500; cursor: pointer; text-decoration: underline; }
+.setup-success-page { display: none; text-align: center; padding: 60px 20px; }
+.setup-success-page.active { display: block; animation: fadeIn 0.5s ease; }
+.setup-success-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #10b981 0%, #34d399 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #fff; margin: 0 auto 24px; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3); }
+.setup-success-title { font-size: 24px; font-weight: 700; color: #1a1a2e; margin-bottom: 12px; }
+.setup-success-desc { font-size: 15px; color: #6b7280; margin-bottom: 32px; }
+.setup-success-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px; }
+.setup-success-tag { background: #e0e7ff; color: #667eea; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500; }
 </style>
 </head>
 <body>
@@ -241,23 +503,85 @@ async function submitRating(roomId) {
 async function showUserProfile(userId) {
     const res = await api('/api/user/ratings?user_id=' + userId);
     const ratings = res || [];
-    let starsHtml = '';
+    const user = currentRoom?.other_user || { nickname: '用户', avatar_color: '#667eea', school: '' };
+    
+    let avgRating = 0;
     if (ratings.length > 0) {
-        const avgRating = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
-        starsHtml = '<div style="text-align:center;margin:10px 0;"><span style="font-size:24px;color:#FFD700;">' + '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating)) + '</span><span style="margin-left:8px;color:#666;">(' + avgRating.toFixed(1) + '分)</span></div>';
+        avgRating = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
     }
+    
+    const interests = user.interests || [];
+    const interestsHtml = interests.map(i => '<span class="tag tag-purple" style="font-size:12px;">' + i + '</span>').join('');
+    
     let ratingsHtml = '';
     if (ratings.length > 0) {
-        ratingsHtml = '<div style="max-height:200px;overflow-y:auto;">';
         ratings.forEach(r => {
-            ratingsHtml += '<div style="padding:10px 0;border-bottom:1px solid #eee;"><div style="color:#FFD700;font-size:14px;">' + '★'.repeat(r.rating) + '</div><div style="color:#666;font-size:13px;margin-top:4px;">' + (r.comment || '该用户未留下评价') + '</div></div>';
+            const raterName = r.rater_nickname || '匿名用户';
+            ratingsHtml += '<div class="profile-rating-item">' +
+                '<div class="profile-rating-header">' +
+                '<div class="profile-rating-avatar">' + raterName[0] + '</div>' +
+                '<div class="profile-rating-info">' +
+                '<div class="profile-rating-name">' + raterName + '</div>' +
+                '<div class="profile-rating-stars">' + '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating) + '</div>' +
+                '</div></div>' +
+                '<div class="profile-rating-comment">' + (r.comment || '该用户未留下评价') + '</div>' +
+                '</div>';
         });
-        ratingsHtml += '</div>';
     } else {
-        ratingsHtml = '<div style="text-align:center;padding:20px;color:#999;">暂无评价</div>';
+        ratingsHtml = '<div class="profile-empty-ratings"><div class="empty-icon">💬</div><p>暂无评价</p><span>完成匹配后可以互相评分哦</span></div>';
     }
-    const content = '<div style="text-align:center;">' + createAvatar(currentRoom.other_user.nickname[0], currentRoom.other_user.avatar_color).replace('class="avatar"', 'class="avatar" style="width:60px;height:60px;font-size:24px;margin:0 auto 10px;"') + '<div style="font-weight:600;font-size:16px;">' + currentRoom.other_user.nickname + '</div></div>' + starsHtml + '<div style="margin-top:16px;"><div style="font-size:14px;font-weight:600;margin-bottom:8px;">历史评价</div>' + ratingsHtml + '</div>';
-    showModal('用户评价', content, [{text:'关闭',type:'outline',onclick:''}]);
+    
+    const stats5 = ratings.filter(r => r.rating === 5).length;
+    const stats4 = ratings.filter(r => r.rating === 4).length;
+    const stats3 = ratings.filter(r => r.rating === 3).length;
+    const stats2 = ratings.filter(r => r.rating === 2).length;
+    const stats1 = ratings.filter(r => r.rating === 1).length;
+    
+    let distributionHtml = '';
+    const stats = [5, 4, 3, 2, 1];
+    const counts = [stats5, stats4, stats3, stats2, stats1];
+    stats.forEach((s, i) => {
+        const pct = ratings.length > 0 ? (counts[i] / ratings.length * 100) : 0;
+        distributionHtml += '<div class="rating-dist-row">' +
+            '<span class="rating-dist-star">' + s + '★</span>' +
+            '<div class="rating-dist-bar"><div class="rating-dist-fill" style="width:' + pct + '%;"></div></div>' +
+            '<span class="rating-dist-count">' + counts[i] + '</span>' +
+            '</div>';
+    });
+    
+    const html = '<div class="profile-detail-page">' +
+        '<div class="profile-detail-header" style="background:linear-gradient(135deg,' + (user.avatar_color || '#667eea') + ' 0%,#764ba2 100%);">' +
+        '<button class="profile-back-btn" onclick="showPage(\'chatPage\')">&#8592;</button>' +
+        '<div class="profile-detail-avatar">' + user.nickname[0] + '</div>' +
+        '<h2 class="profile-detail-name">' + user.nickname + '</h2>' +
+        '<p class="profile-detail-school">' + (user.school || '神秘校园') + '</p>' +
+        '</div>' +
+        '<div class="profile-detail-content">' +
+        
+        '<div class="profile-card">' +
+        '<div class="profile-card-title">信用评分</div>' +
+        '<div class="profile-score-wrap">' +
+        '<div class="profile-score-num">' + (avgRating > 0 ? avgRating.toFixed(1) : '--') + '</div>' +
+        '<div class="profile-score-right">' +
+        '<div class="profile-score-stars">' + '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating)) + '</div>' +
+        '<div class="profile-score-count">共 ' + ratings.length + ' 条评价</div>' +
+        '</div></div>' +
+        '<div class="rating-distribution">' + distributionHtml + '</div>' +
+        '</div>' +
+        
+        '<div class="profile-card">' +
+        '<div class="profile-card-title">兴趣标签</div>' +
+        '<div class="profile-interests">' + (interestsHtml || '<span style="color:#999;font-size:13px;">还没有填写兴趣</span>') + '</div>' +
+        '</div>' +
+        
+        '<div class="profile-card">' +
+        '<div class="profile-card-title">历史评价</div>' +
+        '<div class="profile-ratings-list">' + ratingsHtml + '</div>' +
+        '</div>' +
+        
+        '</div></div>';
+    
+    document.getElementById('app').innerHTML = html;
 }
 
 function nav(active) {
@@ -297,56 +621,336 @@ function showPage(pageId) {
         case 'matchPage': renderMatch(); break;
         case 'hist': renderHistory(); break;
         case 'prof': renderProfile(); break;
+        case 'setup': renderSetupProfile(); break;
     }
 }
 
+// ========== 3-Step Register State ==========
+let regStep = 1;
+const regFormData = { avatar: '🎓', nickname: '', school: '', department: '', grade: '', interests: [], preferences: {} };
+const regRandomNicknames = ['校园小太阳','图书馆常客','操场追风者','咖啡续命人','熬夜冠军','早八战士','食堂探险家','宿舍开心果','实验室幽灵','操场散步人','考研小达人','健身狂魔','代码搬运工','文艺青年','干饭王'];
+const regTagCategories = [
+    { name: '📚 学习备考类', tags: [{tag:'考研',type:'strong'},{tag:'考公',type:'strong'},{tag:'四六级',type:'strong'},{tag:'考证',type:'strong'},{tag:'期末复习',type:'strong'},{tag:'自习',type:'strong'}] },
+    { name: '🏃 运动健身类', tags: [{tag:'跑步',type:'strong'},{tag:'健身',type:'strong'},{tag:'羽毛球',type:'strong'},{tag:'篮球',type:'strong'},{tag:'游泳',type:'strong'},{tag:'骑行',type:'strong'}] },
+    { name: '🎨 休闲娱乐类', tags: [{tag:'饭搭子',type:'weak'},{tag:'探店',type:'weak'},{tag:'看电影',type:'weak'},{tag:'逛展',type:'weak'},{tag:'游戏',type:'weak'},{tag:'旅行',type:'weak'}] },
+    { name: '🌟 生活陪伴类', tags: [{tag:'早起打卡',type:'weak'},{tag:'减肥',type:'weak'},{tag:'图书馆占座',type:'weak'},{tag:'校园散步',type:'weak'}] }
+];
+const regStrongConfigs = {
+    '考研': { levels: ['冲顶尖院校（985 / 头部 211）','冲重点院校（普通 211 / 一本）','只求上岸（二本 / 过线即可）'], intensities: ['极致自律（日均学习 6h+）','稳定备考（日均学习 3-6h）','佛系复习（日均学习 3h 内）','临时抱佛脚（考前冲刺型）'] },
+    '考公': { levels: ['冲高分（目标 150+）','稳过线（目标 120+）','佛系考（过线即可）'], intensities: ['极致自律（日均学习 6h+）','稳定备考（日均学习 3-6h）','佛系复习（日均学习 3h 内）','临时抱佛脚（考前冲刺型）'] },
+    '四六级': { levels: ['冲高分（目标 600+）','稳过线（目标 425+）','佛系考（过线即可）'], intensities: ['极致自律（日均学习 6h+）','稳定备考（日均学习 3-6h）','佛系复习（日均学习 3h 内）','临时抱佛脚（考前冲刺型）'] },
+    '考证': { levels: ['冲高分','稳过线','佛系考'], intensities: ['极致自律（日均学习 6h+）','稳定备考（日均学习 3-6h）','佛系复习（日均学习 3h 内）','临时抱佛脚（考前冲刺型）'] },
+    '期末复习': { levels: ['冲高分（目标 90+）','稳过线（目标 60+）','不挂科即可'], intensities: ['极致自律（日均学习 6h+）','稳定备考（日均学习 3-6h）','佛系复习（日均学习 3h 内）','临时抱佛脚（考前冲刺型）'] },
+    '自习': { levels: ['深度学习（钻研专业）','巩固提升（补强薄弱）','日常保持（跟上进度）'], intensities: ['极致自律（日均学习 6h+）','稳定备考（日均学习 3-6h）','佛系复习（日均学习 3h 内）','临时抱佛脚（考前冲刺型）'] },
+    '跑步': { levels: ['减脂塑形','增肌强化','保持健康'], intensities: ['每周 5 次以上','每周 3-4 次','每周 1-2 次','偶尔随缘'] },
+    '健身': { levels: ['减脂塑形','增肌强化','保持健康'], intensities: ['每周 5 次以上','每周 3-4 次','每周 1-2 次','偶尔随缘'] },
+    '羽毛球': { levels: ['竞技提升','休闲娱乐','随便打打'], intensities: ['每周 5 次以上','每周 3-4 次','每周 1-2 次','偶尔随缘'] },
+    '篮球': { levels: ['竞技提升','休闲娱乐','随便打打'], intensities: ['每周 5 次以上','每周 3-4 次','每周 1-2 次','偶尔随缘'] },
+    '游泳': { levels: ['减脂塑形','技能提升','休闲娱乐'], intensities: ['每周 5 次以上','每周 3-4 次','每周 1-2 次','偶尔随缘'] },
+    '骑行': { levels: ['长途骑行','短途休闲','代步通勤'], intensities: ['每周 5 次以上','每周 3-4 次','每周 1-2 次','偶尔随缘'] }
+};
+const regWeakConfigs = {
+    '饭搭子': { freq: ['几乎每天都约','每周 2-3 次','偶尔随缘约'], style: ['AA 制，各付各的','轮流请客','都可以'] },
+    '探店': { freq: ['几乎每天都约','每周 2-3 次','偶尔随缘约'], style: ['网红打卡','小众探店','随便逛逛'] },
+    '看电影': { freq: ['几乎每天都约','每周 2-3 次','偶尔随缘约'], style: ['院线热门','小众文艺','悬疑烧脑'] },
+    '逛展': { freq: ['几乎每天都约','每周 2-3 次','偶尔随缘约'], style: ['艺术展览','科技展','随便逛逛'] },
+    '游戏': { freq: ['几乎每天都约','每周 2-3 次','偶尔随缘约'], style: ['竞技上分','休闲娱乐','单机剧情'] },
+    '旅行': { freq: ['每月 1 次','每学期 1-2 次','假期随缘'], style: ['穷游背包','舒适出行','特种兵式'] },
+    '早起打卡': { freq: ['每天早起','工作日早起','偶尔早起'], style: ['6:00 前','6:00-7:00','7:00-8:00'] },
+    '减肥': { freq: ['每天打卡','每周 3-4 次','偶尔打卡'], style: ['月减 5kg 以上','月减 2-3kg','保持体重'] },
+    '图书馆占座': { freq: ['每天占座','每周 3-4 次','偶尔占座'], style: ['早到抢好位','随缘有座就行','帮朋友一起占'] },
+    '校园散步': { freq: ['每天散步','每周 3-4 次','偶尔散步'], style: ['操场绕圈','校园漫游','夜跑结合'] }
+};
+
 function renderAuth() {
-    const html = '<div style="padding:40px 20px;min-height:100vh;">' +
-        '<div style="text-align:center;margin-bottom:30px;"><h1 style="color:#fff;font-size:32px;margin-bottom:8px;">校园搭子</h1><p style="color:rgba(255,255,255,0.8);">匿名匹配，发现有趣的灵魂</p></div>' +
-        '<div style="background:#fff;border-radius:20px;padding:24px;">' +
-        '<div style="display:flex;margin-bottom:20px;border-bottom:2px solid #eee;">' +
-        '<div id="tab-login" style="flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:600;color:#6C63FF;border-bottom:2px solid #6C63FF;" onclick="switchAuthTab(\'login\')">登录</div>' +
-        '<div id="tab-register" style="flex:1;text-align:center;padding:10px;cursor:pointer;color:#999;" onclick="switchAuthTab(\'register\')">注册</div></div>' +
+    regStep = 1;
+    regFormData.interests = [];
+    regFormData.preferences = {};
+    const html = '<div style="min-height:100vh;">' +
+        '<div style="position:relative;height:220px;background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;">' +
+        '<div style="position:absolute;top:0;left:0;right:0;bottom:0;background:url(\'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxyYWRpYWxHcmFkaWVudCBpZD0iZSIgZ3JhZGllbnRVbml0cz0idXNlclNwYWNlT25Vc2UiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPjxzdG9wIG9veC5leGl0PSJub25lIiBzdG9wLWNvbG9yPSIjZmZmIiBzdG9wLW9wYWNpdHk9IjAuMyIvPjxzdG9wIG9veC5leGl0PSJub25lIiBzdG9wLWNvbG9yPSIjMDBmZiIgcnVuPSJzdG9wIi8+PC9yYWRpYWxHcmFkaWVudD48L2RlZnM+PGNpcmNsZSBjeD0iNTAlIiBjeT0iNTAlIiByPSIyNSUiIGZpbGw9InVybCgjZSkiIG9wYWNpdHk9IjAuNSIvPjwvc3ZnPg==\') center/cover;opacity:0.5;"></div>' +
+        '<div style="font-size:56px;margin-bottom:12px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));animation:float 3s ease-in-out infinite;">🎓</div>' +
+        '<div style="font-size:40px;margin-bottom:8px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.2));"><span style="display:inline-block;animation:float 3s ease-in-out infinite 0.5s;">🤝</span><span style="display:inline-block;animation:float 3s ease-in-out infinite 1s;margin:0 8px;">💬</span><span style="display:inline-block;animation:float 3s ease-in-out infinite 1.5s;">✨</span></div>' +
+        '<h1 style="color:#fff;font-size:28px;font-weight:700;margin-bottom:6px;text-shadow:0 2px 8px rgba(0,0,0,0.2);position:relative;z-index:1;">校园搭子</h1>' +
+        '<p style="color:rgba(255,255,255,0.95);font-size:14px;position:relative;z-index:1;">找到志同道合的伙伴，开启美好校园生活</p>' +
+        '<div style="position:absolute;bottom:-1px;left:0;right:0;height:30px;background:linear-gradient(to bottom,transparent,#f7fafc);"></div></div>' +
+        '<div style="padding:0 20px 40px;margin-top:-10px;">' +
+        '<div style="background:#fff;border-radius:20px;padding:24px;box-shadow:0 10px 40px rgba(102,126,234,0.15);">' +
+        '<div style="display:flex;gap:10px;margin-bottom:20px;">' +
+        '<button id="tab-login" class="btn btn-purple" style="flex:1;" onclick="switchAuthTab(\'login\')">登录</button>' +
+        '<button id="tab-register" class="btn" style="flex:1;background:#f0f0f0;color:#666;" onclick="switchAuthTab(\'register\')">注册</button></div>' +
         '<div id="auth-form">' +
         '<div class="form-group"><label>用户名</label><input id="auth-username" placeholder="请输入用户名"></div>' +
         '<div class="form-group"><label>密码</label><input id="auth-password" type="password" placeholder="请输入密码"></div>' +
-        '<div id="register-extra" style="display:none;"><div class="form-group"><label>昵称</label><input id="auth-nickname" placeholder="请输入昵称"></div></div>' +
-        '<button class="btn btn-purple" style="width:100%;margin-top:10px;" onclick="handleAuth()">登录</button></div></div></div>';
+        '<button class="btn btn-purple" style="width:100%;margin-top:10px;" onclick="handleAuth()">登录</button></div></div></div></div>';
     document.getElementById('app').innerHTML = html;
 }
+
+// ========== 注册流程 ==========
+let regTempData = {}; // 临时存储注册数据
 
 function switchAuthTab(tab) {
     const loginTab = document.getElementById('tab-login');
     const regTab = document.getElementById('tab-register');
-    loginTab.style.color = tab=='login'?'#6C63FF':'#999';
-    loginTab.style.borderBottom = tab=='login'?'2px solid #6C63FF':'none';
-    regTab.style.color = tab=='register'?'#6C63FF':'#999';
-    regTab.style.borderBottom = tab=='register'?'2px solid #6C63FF':'none';
-    document.getElementById('register-extra').style.display = tab=='register'?'block':'none';
-    document.querySelector('.btn-purple').textContent = tab=='login'?'登录':'注册';
-    window.authMode = tab;
+    if (tab == 'login') {
+        loginTab.className = 'btn btn-purple';
+        loginTab.style.cssText = 'flex:1;';
+        regTab.className = 'btn';
+        regTab.style.cssText = 'flex:1;background:#f0f0f0;color:#666;';
+        document.getElementById('auth-form').innerHTML =
+            '<div class="form-group"><label>用户名</label><input id="auth-username" placeholder="请输入用户名"></div>' +
+            '<div class="form-group"><label>密码</label><input id="auth-password" type="password" placeholder="请输入密码"></div>' +
+            '<button class="btn btn-purple" style="width:100%;margin-top:10px;" onclick="handleAuth()">登录</button>';
+        window.authMode = 'login';
+    } else {
+        regTab.className = 'btn btn-purple';
+        regTab.style.cssText = 'flex:1;';
+        loginTab.className = 'btn';
+        loginTab.style.cssText = 'flex:1;background:#f0f0f0;color:#666;';
+        renderRegisterStep1();
+        window.authMode = 'register';
+    }
+}
+
+// 第一步：账户信息
+function renderRegisterStep1() {
+    regStep = 1;
+    regTempData = {};
+    const schoolList = ['北京大学','清华大学','复旦大学','上海交通大学','浙江大学','南京大学','武汉大学','中山大学','四川大学','华中科技大学','西安交通大学','同济大学','北京航空航天大学','其他院校'];
+    const schoolOpts = schoolList.map(s => '<option value="'+s+'">'+s+'</option>').join('');
+    const html = '<div style="padding:16px 0 0;">' +
+        '<div style="text-align:center;margin-bottom:20px;"><div style="font-size:40px;margin-bottom:8px;">📝</div><h2 style="font-size:18px;color:#1a1a2e;">创建你的账户</h2></div>' +
+        '<div class="form-group"><label>用户名</label><input id="reg-username" class="form-input" placeholder="用于登录（6-20位）"></div>' +
+        '<div class="form-group"><label>密码</label><input id="reg-password" type="password" class="form-input" placeholder="设置登录密码（6位以上）"></div>' +
+        '<div class="form-group"><label>昵称</label><input id="reg-nickname" class="form-input" placeholder="你在搭子眼中的名字（10字内）" maxlength="10"></div>' +
+        '<div class="form-group"><label>学校</label><select id="reg-school" class="form-input" style="appearance:none;"><option value="">请选择学校</option>' + schoolOpts + '</select></div>' +
+        '<div class="form-group"><label>学号</label><input id="reg-student-id" class="form-input" placeholder="请输入学号（选填）"></div>' +
+        '<button class="btn btn-purple" style="width:100%;margin-top:16px;" onclick="handleRegisterStep1()">下一步</button>' +
+        '<div style="text-align:center;margin-top:16px;font-size:13px;color:#6b7280;">已有账号？<a href="javascript:switchAuthTab(\'login\')" style="color:#667eea;">立即登录</a></div></div>';
+    document.getElementById('auth-form').innerHTML = html;
+}
+
+async function handleRegisterStep1() {
+    const username = document.getElementById('reg-username').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const nickname = document.getElementById('reg-nickname').value.trim();
+    const school = document.getElementById('reg-school').value;
+    const studentId = document.getElementById('reg-student-id').value.trim();
+    
+    if (!username || username.length < 6) { alert('用户名至少6位'); return; }
+    if (!password || password.length < 6) { alert('密码至少6位'); return; }
+    if (!nickname) { alert('请输入昵称'); return; }
+    if (!school) { alert('请选择学校'); return; }
+    
+    regTempData = { username, password, school, studentId };
+    
+    // 注册
+    const res = await api('/api/register', 'POST', { username, password, nickname, school, department: studentId });
+    if (res.error) { alert(res.error); return; }
+    
+    // 自动登录
+    const loginRes = await api('/api/login', 'POST', { username, password });
+    if (loginRes.error) { alert('注册成功，请登录'); switchAuthTab('login'); return; }
+    saveToken(loginRes.token);
+    currentUser = loginRes.user;
+    await loadInterests();
+    
+    // 跳转到偏好设置
+    showPage('setup');
+}
+
+// ========== Step 1: Basic Info ==========
+function renderRegStep1() {
+    const schoolOpts = ['清华大学','北京大学','复旦大学','上海交通大学','浙江大学','南京大学','武汉大学','中山大学','四川大学','华中科技大学','其他院校'].map((s,i) => '<option value="'+s+'">'+s+'</option>').join('');
+    const html = '<div style="min-height:100vh;background:#f7fafc;">' +
+        '<div style="padding:16px 20px 8px;display:flex;align-items:center;"><button onclick="switchAuthTab(\'login\')" style="background:none;border:none;font-size:20px;color:#6b7280;cursor:pointer;">←</button></div>' +
+        '<div class="reg-progress-wrap"><div class="reg-progress-bar"><div class="reg-progress-step active"></div><div class="reg-progress-step"></div><div class="reg-progress-step"></div></div><div class="reg-progress-text">当前第 1 步，共 3 步</div></div>' +
+        '<div class="reg-title"><h1>欢迎加入，先简单认识一下</h1><p>填写基本信息，开启你的搭子之旅</p></div>' +
+        '<div class="reg-content">' +
+        '<div class="reg-avatar-section"><div class="reg-avatar-wrap"><div class="reg-avatar-img" id="reg-avatar">🎓</div><div class="reg-avatar-change" onclick="regChangeAvatar()">↻</div></div><div class="reg-avatar-hint">点击头像可更换随机校园风头像</div></div>' +
+        '<div class="form-group"><label>昵称 <span style="color:#999;font-weight:400;">限10字内</span></label><div class="reg-nickname-wrap"><input id="reg-nickname" class="form-input" placeholder="给自己起个昵称" maxlength="10"><button class="reg-nickname-random" onclick="regRandomNickname()">随机推荐</button></div></div>' +
+        '<div class="form-group"><label>院校 <span style="color:#e53e3e;">*</span></label><select id="reg-school" class="form-input" style="appearance:none;"><option value="">请选择学校</option>' + schoolOpts + '</select></div>' +
+        '<div class="form-group"><label>院系</label><select id="reg-dept" class="form-input" style="appearance:none;"><option value="">请选择院系</option><option value="计算机学院">计算机学院</option><option value="电子信息学院">电子信息学院</option><option value="商学院">商学院</option><option value="艺术学院">艺术学院</option><option value="理学院">理学院</option><option value="文学院">文学院</option><option value="法学院">法学院</option><option value="医学院">医学院</option><option value="其他">其他院系</option></select></div>' +
+        '<div class="form-group"><label>年级 <span style="color:#999;font-weight:400;">选填</span></label><div class="reg-grade-grid" id="reg-grade-grid">' +
+        ['大一','大二','大三','大四','研究生','保密'].map((g,i) => '<div class="reg-grade-option" data-value="'+(i<5?i+1:0)+'" onclick="regSelectGrade(this)">'+g+'</div>').join('') +
+        '</div></div></div>' +
+        '<div class="reg-bottom-action"><button class="btn btn-purple" onclick="regGoStep2()">下一步</button></div></div>';
+    document.getElementById('auth-form').innerHTML = html;
+    document.getElementById('auth-form').style.maxHeight = 'none';
+    document.querySelector('.btn-purple').textContent = '注册';
+}
+
+function regChangeAvatar() {
+    const avatars = ['🎓','📚','🏃','🎨','🎵','💻','🌟','🔥','💪','🎯'];
+    const a = avatars[Math.floor(Math.random()*avatars.length)];
+    document.getElementById('reg-avatar').textContent = a;
+    regFormData.avatar = a;
+}
+function regRandomNickname() {
+    const n = regRandomNicknames[Math.floor(Math.random()*regRandomNicknames.length)];
+    document.getElementById('reg-nickname').value = n;
+    regFormData.nickname = n;
+}
+function regSelectGrade(el) {
+    document.querySelectorAll('#reg-grade-grid .reg-grade-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    regFormData.grade = el.dataset.value;
+}
+
+function regGoStep2() {
+    regFormData.nickname = document.getElementById('reg-nickname').value.trim();
+    regFormData.school = document.getElementById('reg-school').value;
+    regFormData.department = document.getElementById('reg-dept').value;
+    if (!regFormData.nickname) { alert('请填写昵称'); return; }
+    if (!regFormData.school) { alert('请选择院校'); return; }
+    renderRegStep2();
+}
+
+// ========== Step 2: Interest Selection ==========
+function renderRegStep2() {
+    regStep = 2;
+    let categoriesHtml = '';
+    regTagCategories.forEach(cat => {
+        let tagsHtml = cat.tags.map(t =>
+            '<div class="reg-tag-item" data-tag="'+t.tag+'" data-type="'+t.type+'" onclick="regToggleTag(this)">' + t.tag + '<span class="reg-tag-check">✓</span></div>'
+        ).join('');
+        categoriesHtml += '<div class="reg-interest-category"><div class="reg-category-title">'+cat.name+'</div><div class="reg-tag-grid">'+tagsHtml+'</div></div>';
+    });
+    const html = '<div style="min-height:100vh;background:#f7fafc;">' +
+        '<div style="padding:16px 20px 8px;display:flex;align-items:center;"><button onclick="renderRegStep1()" style="background:none;border:none;font-size:20px;color:#6b7280;cursor:pointer;">←</button></div>' +
+        '<div class="reg-progress-wrap"><div class="reg-progress-bar"><div class="reg-progress-step active"></div><div class="reg-progress-step active"></div><div class="reg-progress-step"></div></div><div class="reg-progress-text">当前第 2 步，共 3 步</div></div>' +
+        '<div class="reg-title"><h1>你想找什么类型的搭子？</h1><p>选得越准，匹配越合得来（最多选 3 个）</p></div>' +
+        '<div class="reg-content">' + categoriesHtml +
+        '<div class="reg-selected-count" id="reg-selected-count">已选 0 / 3</div>' +
+        '<div style="text-align:center;font-size:12px;color:#999;margin-top:8px;">选完可以设置更细的匹配偏好，也可以直接跳过</div></div>' +
+        '<div class="reg-bottom-action"><button class="btn btn-purple" id="reg-step2-next" onclick="regGoStep3()" disabled>下一步</button><button class="btn btn-secondary" onclick="regGoStep3()">跳过</button></div></div>';
+    document.getElementById('auth-form').innerHTML = html;
+    document.getElementById('auth-form').style.maxHeight = 'none';
+}
+
+function regToggleTag(el) {
+    const tag = el.dataset.tag;
+    const type = el.dataset.type;
+    const isSelected = el.classList.contains('selected');
+    if (isSelected) {
+        el.classList.remove('selected');
+        regFormData.interests = regFormData.interests.filter(i => i.tag !== tag);
+    } else {
+        if (regFormData.interests.length >= 3) { alert('最多选择 3 个标签'); return; }
+        el.classList.add('selected');
+        regFormData.interests.push({ tag, name: tag, type });
+    }
+    const count = regFormData.interests.length;
+    const countEl = document.getElementById('reg-selected-count');
+    if (countEl) countEl.textContent = '已选 ' + count + ' / 3';
+    const nextBtn = document.getElementById('reg-step2-next');
+    if (nextBtn) nextBtn.disabled = count === 0;
+}
+
+// ========== Step 3: Preference Settings ==========
+function regGoStep3() {
+    if (regFormData.interests.length === 0) { alert('请至少选择 1 个兴趣标签'); return; }
+    renderRegStep3();
+}
+
+function renderRegStep3() {
+    regStep = 3;
+    let cardsHtml = '';
+    regFormData.interests.forEach(interest => {
+        if (interest.type === 'strong') {
+            cardsHtml += renderRegStrongCard(interest);
+        } else {
+            cardsHtml += renderRegWeakCard(interest);
+        }
+    });
+    const html = '<div style="min-height:100vh;background:#f7fafc;">' +
+        '<div style="padding:16px 20px 8px;display:flex;align-items:center;"><button onclick="renderRegStep2()" style="background:none;border:none;font-size:20px;color:#6b7280;cursor:pointer;">←</button></div>' +
+        '<div class="reg-progress-wrap"><div class="reg-progress-bar"><div class="reg-progress-step active"></div><div class="reg-progress-step active"></div><div class="reg-progress-step active"></div></div><div class="reg-progress-text">当前第 3 步，共 3 步</div></div>' +
+        '<div class="reg-title"><h1>微调一下，匹配更精准</h1><p>根据你选的方向设置，都可以跳过</p></div>' +
+        '<div class="reg-content">' + cardsHtml + '</div>' +
+        '<div class="reg-skip-all"><button class="reg-skip-all-btn" onclick="regFinish()">跳过所有设置，直接完成注册</button></div>' +
+        '<div class="reg-bottom-action"><button class="btn btn-purple" onclick="regFinish()">完成注册</button><button class="btn btn-secondary" onclick="regFinish()">跳过</button><div class="btn-hint">所有偏好后续都可以在「我的 - 匹配设置」里修改</div></div></div>';
+    document.getElementById('auth-form').innerHTML = html;
+    document.getElementById('auth-form').style.maxHeight = 'none';
+}
+
+function renderRegStrongCard(interest) {
+    const cfg = regStrongConfigs[interest.tag] || regStrongConfigs['考研'];
+    const levelsHtml = cfg.levels.map((l,i) => '<div class="reg-radio-option'+(i===1?' selected':'')+'" data-value="'+(i+1)+'" onclick="regSelectRadio(this)"><div class="reg-radio-circle"></div><div class="reg-radio-text">'+l+'</div></div>').join('');
+    const intsHtml = cfg.intensities.map((l,i) => '<div class="reg-radio-option'+(i===1?' selected':'')+'" data-value="'+(i+1)+'" onclick="regSelectRadio(this)"><div class="reg-radio-circle"></div><div class="reg-radio-text">'+l+'</div></div>').join('');
+    return '<div class="reg-pref-card" data-tag="'+interest.tag+'"><div class="reg-pref-card-title">'+interest.name+'搭子偏好 <span class="reg-tag-badge">强目标</span></div>' +
+        '<div class="reg-pref-row"><div class="reg-pref-row-label">目标分层</div><div class="reg-radio-group">'+levelsHtml+'</div></div>' +
+        '<div class="reg-pref-row"><div class="reg-pref-row-label">目标强度</div><div class="reg-pref-row-hint">强度对应你的日常投入程度，系统会匹配节奏相近的人</div><div class="reg-radio-group">'+intsHtml+'</div></div></div>';
+}
+
+function renderRegWeakCard(interest) {
+    const cfg = regWeakConfigs[interest.tag] || regWeakConfigs['饭搭子'];
+    const freqHtml = cfg.freq.map((l,i) => '<div class="reg-radio-option'+(i===1?' selected':'')+'" data-value="'+(i+1)+'" onclick="regSelectRadio(this)"><div class="reg-radio-circle"></div><div class="reg-radio-text">'+l+'</div></div>').join('');
+    const styleHtml = cfg.style.map((l,i) => '<div class="reg-radio-option'+(i===0?' selected':'')+'" data-value="'+(i+1)+'" onclick="regSelectRadio(this)"><div class="reg-radio-circle"></div><div class="reg-radio-text">'+l+'</div></div>').join('');
+    return '<div class="reg-pref-card" data-tag="'+interest.tag+'"><div class="reg-pref-card-title">'+interest.name+'偏好 <span class="reg-tag-badge weak">休闲</span></div>' +
+        '<div class="reg-pref-row"><div class="reg-pref-row-label">约伴频率</div><div class="reg-radio-group">'+freqHtml+'</div></div>' +
+        '<div class="reg-pref-row"><div class="reg-pref-row-label">相处偏好</div><div class="reg-radio-group">'+styleHtml+'</div></div></div>';
+}
+
+function regSelectRadio(el) {
+    const group = el.closest('.reg-radio-group');
+    group.querySelectorAll('.reg-radio-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    // Save preference
+    const card = el.closest('.reg-pref-card');
+    const tag = card.dataset.tag;
+    const row = el.closest('.reg-pref-row');
+    const rowLabel = row.querySelector('.reg-pref-row-label').textContent;
+    if (!regFormData.preferences[tag]) regFormData.preferences[tag] = {};
+    regFormData.preferences[tag][rowLabel] = el.dataset.value;
+}
+
+async function regFinish() {
+    showLoading();
+    // Collect selected preferences from DOM
+    document.querySelectorAll('.reg-pref-card').forEach(card => {
+        const tag = card.dataset.tag;
+        if (!regFormData.preferences[tag]) regFormData.preferences[tag] = {};
+        card.querySelectorAll('.reg-pref-row').forEach(row => {
+            const label = row.querySelector('.reg-pref-row-label').textContent;
+            const selected = row.querySelector('.reg-radio-option.selected');
+            if (selected && !regFormData.preferences[tag][label]) {
+                regFormData.preferences[tag][label] = selected.dataset.value;
+            }
+        });
+    });
+
+    const username = document.getElementById('auth-username') ? document.getElementById('auth-username').value : '';
+    const password = document.getElementById('auth-password') ? document.getElementById('auth-password').value : '';
+    if (!username || !password) { hideLoading(); alert('请返回填写用户名和密码'); return; }
+
+    // Register
+    const regRes = await api('/api/register', 'POST', { username, password, nickname: regFormData.nickname, school: regFormData.school, department: regFormData.department, grade: regFormData.grade, interests: regFormData.interests.map(i=>i.tag), preferences: JSON.stringify(regFormData.preferences) });
+    if (regRes.error) { hideLoading(); alert(regRes.error); return; }
+
+    // Auto login
+    const loginRes = await api('/api/login', 'POST', { username, password });
+    if (loginRes.error) { hideLoading(); alert('注册成功，请手动登录'); switchAuthTab('login'); return; }
+    saveToken(loginRes.token);
+    currentUser = loginRes.user;
+    await loadInterests();
+    hideLoading();
+    showPage('home');
 }
 
 async function handleAuth() {
-    const mode = window.authMode || 'login';
-    const username = document.getElementById('auth-username').value;
-    const password = document.getElementById('auth-password').value;
+    const usernameEl = document.getElementById('auth-username');
+    const passwordEl = document.getElementById('auth-password');
+    if (!usernameEl || !passwordEl) return; // 注册模式不处理登录
+    const username = usernameEl.value;
+    const password = passwordEl.value;
     if (!username || !password) { alert('请填写完整信息'); return; }
-    if (mode == 'register') {
-        const nickname = document.getElementById('auth-nickname').value;
-        if (!nickname) { alert('请填写昵称'); return; }
-        const res = await api('/api/register', 'POST', {username, password, nickname});
-        if (res.error) { alert(res.error); return; }
-        alert('注册成功，请登录');
-        switchAuthTab('login');
-    } else {
-        const res = await api('/api/login', 'POST', {username, password});
-        if (res.error) { alert(res.error); return; }
-        saveToken(res.token);
-        currentUser = res.user;
-        await loadInterests();
-        showPage('home');
-    }
+    const res = await api('/api/login', 'POST', {username, password});
+    if (res.error) { alert(res.error); return; }
+    saveToken(res.token);
+    currentUser = res.user;
+    await loadInterests();
+    showPage('home');
 }
 
 async function renderHome() {
@@ -369,14 +973,70 @@ async function renderHome() {
 
 async function startRandomMatch() {
     if (currentUser.coins < 1) { alert('校园币不足'); return; }
-    showLoading();
+    renderMatchLoading('random');
     setTimeout(async () => {
         const res = await api('/api/matching/random', 'POST');
-        hideLoading();
-        if (res.error) { alert(res.error); return; }
+        if (res.error) { alert(res.error); renderHome(); return; }
         currentRoom = res;
-        showPage('chatPage');
-    }, 3000);
+        renderMatchResult(res);
+    }, 2500);
+}
+
+function renderMatchLoading(type) {
+    const tips = ['正在为你寻找同频的TA...', '正在匹配兴趣标签...', '正在计算匹配度...', '马上就找到啦...'];
+    let tipIdx = 0;
+    const html = '<div class="match-loading-page"><div class="match-loading-bg"></div>' +
+        '<div class="match-loading-content">' +
+        '<div class="match-loading-avatar"><div class="match-loading-avatar-inner">🎓</div>' +
+        '<div class="match-loading-ring ring1"></div><div class="match-loading-ring ring2"></div><div class="match-loading-ring ring3"></div></div>' +
+        '<h2 class="match-loading-title">正在匹配中...</h2>' +
+        '<p class="match-loading-tip" id="match-loading-tip">' + tips[0] + '</p>' +
+        '<div class="match-loading-dots"><span></span><span></span><span></span></div>' +
+        '<button class="match-cancel-btn" onclick="cancelMatch()">取消匹配</button>' +
+        '</div></div>';
+    document.getElementById('app').innerHTML = html;
+    window.matchTipInterval = setInterval(() => {
+        tipIdx = (tipIdx + 1) % tips.length;
+        const el = document.getElementById('match-loading-tip');
+        if (el) el.textContent = tips[tipIdx];
+    }, 800);
+}
+
+function cancelMatch() {
+    if (window.matchTipInterval) clearInterval(window.matchTipInterval);
+    renderHome();
+}
+
+function renderMatchResult(room) {
+    if (window.matchTipInterval) clearInterval(window.matchTipInterval);
+    const user = room.other_user;
+    const interests = user.interests || [];
+    let interestsHtml = interests.map(i => '<span class="tag tag-purple" style="font-size:12px;">' + i + '</span>').join('');
+    const html = '<div class="match-result-page"><div class="match-result-bg"></div>' +
+        '<div class="match-result-content">' +
+        '<div class="match-result-success">匹配成功！</div>' +
+        '<div class="match-result-avatar-wrap">' +
+        '<div class="match-result-avatar me">' + currentUser.nickname[0] + '</div>' +
+        '<div class="match-result-heart">💖</div>' +
+        '<div class="match-result-avatar other" style="background:' + (user.avatar_color || '#667eea') + ';">' + user.nickname[0] + '</div>' +
+        '</div>' +
+        '<div class="match-result-card">' +
+        '<h2 class="match-result-name">' + user.nickname + '</h2>' +
+        '<p class="match-result-school">' + (user.school || '神秘校园') + '</p>' +
+        '<div class="match-result-match-rate">' +
+        '<div class="match-rate-ring"><span>' + Math.floor(Math.random() * 20 + 75) + '%</span></div>' +
+        '<div class="match-rate-text">匹配度</div></div>' +
+        '<div class="match-result-interests"><div class="match-result-label">共同兴趣</div>' +
+        '<div class="match-result-tags">' + (interestsHtml || '<span style="color:#999;font-size:13px;">还没有填写兴趣</span>') + '</div></div>' +
+        '<div class="match-result-actions">' +
+        '<button class="btn btn-outline match-result-btn-secondary" onclick="cancelMatch()">再找找</button>' +
+        '<button class="btn btn-purple match-result-btn-primary" onclick="enterChatFromMatch()">开始聊天</button>' +
+        '</div></div></div></div>';
+    document.getElementById('app').innerHTML = html;
+}
+
+function enterChatFromMatch() {
+    showPage('chatPage');
 }
 
 async function renderMessages() {
@@ -412,8 +1072,36 @@ async function renderChat() {
     if (!currentRoom) { showPage('home'); return; }
     const statusRes = await api('/api/room/status?room_id=' + currentRoom.room_id);
     const isEnded = statusRes.status == 'ended';
-    let header = '<div class="header"><div style="display:flex;align-items:center;"><span onclick="showPage(\'messagesPage\')" style="cursor:pointer;font-size:24px;margin-right:12px;">←</span><span onclick="showUserProfile(' + currentRoom.other_user.id + ')">' + createAvatar(currentRoom.other_user.nickname[0], currentRoom.other_user.avatar_color) + '</span><div style="margin-left:12px;"><h1>' + currentRoom.other_user.nickname + '</h1><p>' + (isEnded ? '对话已结束' : '进行中') + '</p></div>' + (isEnded ? '' : '<button class="btn btn-outline" style="margin-left:auto;padding:6px 12px;font-size:12px;" onclick="endChat()">结束对话</button>') + '</div></div>';
-    let inputHtml = isEnded ? '<div class="chat-input"><button class="btn btn-purple" onclick="showRatingModal(' + currentRoom.room_id + ')">去评分</button></div>' : '<div class="chat-input"><input id="chat-input" placeholder="输入消息..." onkeypress="if(event.key==\'Enter\')sendMessage()"><button class="btn btn-purple" onclick="sendMessage()">发送</button></div>';
+    const user = currentRoom.other_user;
+    
+    let header = '<div class="chat-header">' +
+        '<div class="chat-header-left">' +
+        '<button class="chat-back-btn" onclick="showPage(\'messagesPage\')">&#8592;</button>' +
+        '<div class="chat-header-avatar" onclick="showUserProfile(' + user.id + ')" style="background:' + (user.avatar_color || '#667eea') + ';">' + user.nickname[0] + '</div>' +
+        '<div class="chat-header-info">' +
+        '<div class="chat-header-name">' + user.nickname + '</div>' +
+        '<div class="chat-header-status">' +
+        '<span class="chat-status-dot ' + (isEnded ? 'ended' : 'online') + '"></span>' +
+        (isEnded ? '对话已结束' : '在线') +
+        '</div></div></div>' +
+        '<div class="chat-header-right">' +
+        (isEnded ? '<button class="chat-action-btn" onclick="showRatingModal(' + currentRoom.room_id + ')">⭐ 评分</button>' :
+        '<button class="chat-action-btn" onclick="endChat()">结束对话</button>') +
+        '</div></div>';
+    
+    let inputHtml = isEnded 
+        ? '<div class="chat-input-area ended"><button class="btn btn-purple chat-rating-btn" onclick="showRatingModal(' + currentRoom.room_id + ')">💫 为这次匹配打个分吧</button></div>' 
+        : '<div class="chat-input-area">' +
+          '<div class="chat-emoji-panel" id="chat-emoji-panel" style="display:none;">' +
+          '<div class="chat-emoji-grid">' +
+          ['😊','😂','🥰','😍','🤔','😏','😭','😎','🥺','😴','🤗','😋','🙄','😤','🥳','😇','🤭','😜','🫡','🤩','😅','😌','😆','🤯','😲','😱','🤗','🫶','👍','👎','👏','🙌','🤝','💪','✊','🤞','🫰','👋','🙋','💖','💝','💞','💕','💗','💓','💘','💔','❤️','🧡','💛','💚','💙','💜','🖤','🤍','💯','🔥','✨','🌟','⭐','🎉','🎊','🎁','🌹','🌸','🌷','🍀','🌈','☀️','🌙','⚡','💫','🎵','🎶','🍺','🍻','☕','🍰','🍔','🍕','🎮','📚','🏃','💪','🎯','🚀','💤','💭','💬','📱','💻','📷','🎨','🎬','📖','✏️','📝'].map(e => '<div class="chat-emoji-item" onclick="insertEmoji(\'' + e + '\')">' + e + '</div>').join('') +
+          '</div></div>' +
+          '<div class="chat-input-wrap">' +
+          '<button class="chat-input-emoji" id="chat-emoji-btn" onclick="toggleEmojiPanel()">😊</button>' +
+          '<input id="chat-input" class="chat-input-field" placeholder="说点什么..." onkeypress="if(event.key==\'Enter\')sendMessage()" onclick="hideEmojiPanel()">' +
+          '<button class="chat-send-btn" onclick="sendMessage()">发送</button>' +
+          '</div></div>';
+    
     const html = header + '<div class="chat-container"><div class="chat-messages" id="chat-messages"></div>' + inputHtml + '</div>';
     document.getElementById('app').innerHTML = html;
     messagesList = [];
@@ -432,13 +1120,40 @@ function renderMessageList() {
     const container = document.getElementById('chat-messages');
     if (!container) return;
     let html = '';
-    messagesList.forEach(msg => {
-        if (msg.sender_id == 0) html += '<div class="message system">' + msg.content + '</div>';
-        else if (msg.sender_id == currentUser.id) html += '<div class="message me">' + msg.content + '</div>';
-        else html += '<div class="message other">' + msg.content + '</div>';
+    let lastDate = '';
+    messagesList.forEach((msg, idx) => {
+        const msgDate = msg.created_at ? msg.created_at.split(' ')[0] : '';
+        if (msgDate != lastDate && msg.created_at) {
+            lastDate = msgDate;
+            html += '<div class="chat-date-divider"><span>' + formatChatDate(msg.created_at) + '</span></div>';
+        }
+        if (msg.sender_id == 0) {
+            html += '<div class="msg-row msg-system"><div class="msg-system-text">' + msg.content + '</div></div>';
+        } else if (msg.sender_id == currentUser.id) {
+            html += '<div class="msg-row msg-me"><div class="msg-bubble msg-bubble-me">' + msg.content + '</div>' +
+                '<div class="msg-avatar" style="background:#667eea;">' + currentUser.nickname[0] + '</div></div>';
+        } else {
+            const user = currentRoom.other_user;
+            html += '<div class="msg-row msg-other">' +
+                '<div class="msg-avatar" style="background:' + (user.avatar_color || '#667eea') + ';" onclick="showUserProfile(' + user.id + ')">' + user.nickname[0] + '</div>' +
+                '<div class="msg-bubble msg-bubble-other">' + msg.content + '</div></div>';
+        }
     });
     container.innerHTML = html;
-    container.scrollTop = container.scrollHeight;
+    setTimeout(() => { container.scrollTop = container.scrollHeight; }, 50);
+}
+
+function formatChatDate(dateStr) {
+    const today = new Date();
+    const msgDate = new Date(dateStr.replace(/-/g, '/'));
+    const todayStr = today.toISOString().split('T')[0];
+    const msgStr = msgDate.toISOString().split('T')[0];
+    if (todayStr === msgStr) return '今天';
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yestStr = yesterday.toISOString().split('T')[0];
+    if (yestStr === msgStr) return '昨天';
+    return msgDate.getMonth() + 1 + '月' + msgDate.getDate() + '日';
 }
 
 async function sendMessage() {
@@ -448,9 +1163,36 @@ async function sendMessage() {
     if (!content) return;
     isSending = true;
     input.value = '';
+    hideEmojiPanel();
     await api('/api/messages', 'POST', {room_id: currentRoom.room_id, content});
     await loadMessages();
     isSending = false;
+}
+
+function toggleEmojiPanel() {
+    const panel = document.getElementById('chat-emoji-panel');
+    if (!panel) return;
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+    } else {
+        panel.style.display = 'none';
+    }
+}
+
+function hideEmojiPanel() {
+    const panel = document.getElementById('chat-emoji-panel');
+    if (panel) panel.style.display = 'none';
+}
+
+function insertEmoji(emoji) {
+    const input = document.getElementById('chat-input');
+    if (!input) return;
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const text = input.value;
+    input.value = text.substring(0, start) + emoji + text.substring(end);
+    input.focus();
+    input.selectionStart = input.selectionEnd = start + emoji.length;
 }
 
 async function endChat() {
@@ -500,14 +1242,13 @@ async function startTargetedMatch() {
     const ageMin = document.getElementById('age-min').value || 0;
     const ageMax = document.getElementById('age-max').value || 100;
     const school = document.getElementById('match-school').value;
-    showLoading();
+    renderMatchLoading('targeted');
     setTimeout(async () => {
         const res = await api('/api/matching/targeted', 'POST', {interests: window.selectedInterests, gender, age_min: parseInt(ageMin), age_max: parseInt(ageMax), school});
-        hideLoading();
-        if (res.error) { alert(res.error); return; }
+        if (res.error) { alert(res.error); renderMatch(); return; }
         currentRoom = res;
-        showPage('chatPage');
-    }, 3000);
+        renderMatchResult(res);
+    }, 2500);
 }
 
 async function renderHistory() {
@@ -526,8 +1267,17 @@ async function renderProfile() {
     currentUser.interests.forEach(int => interestsHtml += '<span class="tag tag-purple">' + int + '</span>');
     let ratingsHtml = '';
     ratings.forEach(r => ratingsHtml += '<div class="rating-item"><div class="rating-stars">' + renderStars(r.rating) + '</div><div class="rating-comment">' + (r.comment || '该用户未留下评价') + '</div></div>');
-    const html = '<div class="header"><h1>个人资料</h1></div><div class="profile-header">' + createAvatar(currentUser.nickname[0], currentUser.avatar_color) + '<h2>' + currentUser.nickname + '</h2><p>' + (currentUser.school || '未填写学校') + '</p><div class="coin-badge" style="margin-top:10px;background:rgba(108,99,255,0.1);color:#6C63FF;"><span>🪙</span>' + currentUser.coins + ' 校园币</div></div><div class="card"><h3 style="font-size:15px;margin-bottom:12px;">兴趣标签</h3>' + (interestsHtml || '<p style="color:#999;font-size:13px;">暂无兴趣标签</p>') + '</div><div class="card"><h3 style="font-size:15px;margin-bottom:12px;">收到的评价 (' + ratings.length + ')</h3>' + (ratingsHtml || '<p style="color:#999;font-size:13px;">暂无评价</p>') + '</div><button class="btn btn-outline edit-btn" onclick="renderEditProfile()">编辑资料</button><button class="btn" style="width:calc(100% - 32px);margin:0 auto;display:block;background:#f5f5f5;color:#666;" onclick="logout()">退出登录</button>';
-    document.getElementById('app').innerHTML = wrap(html, 'prof');
+    const goalText = {'light':'轻度','medium':'中度','heavy':'重度'};
+    const rhythmText = {'early':'早起型','day':'日间型','night':'夜猫子型','flexible':'灵活型'};
+    const styleText = {'compete':'竞争型','cooperate':'合作型','relaxed':'休闲型'};
+    let profileHtml = '<div class="header"><h1>个人资料</h1></div><div class="profile-header">' + createAvatar(currentUser.nickname[0], currentUser.avatar_color) + '<h2>' + currentUser.nickname + '</h2><p>' + (currentUser.school || '未填写学校') + '</p><div class="coin-badge" style="margin-top:10px;background:rgba(108,99,255,0.1);color:#6C63FF;"><span>🪙</span>' + currentUser.coins + ' 校园币</div></div>';
+    profileHtml += '<div class="card"><h3 style="font-size:15px;margin-bottom:12px;">匹配偏好</h3><div style="display:flex;gap:8px;flex-wrap:wrap;">';
+    if (currentUser.goal_intensity) profileHtml += '<span class="tag tag-purple">目标强度：' + (goalText[currentUser.goal_intensity] || currentUser.goal_intensity) + '</span>';
+    if (currentUser.time_rhythm) profileHtml += '<span class="tag tag-pink">作息：' + (rhythmText[currentUser.time_rhythm] || currentUser.time_rhythm) + '</span>';
+    if (currentUser.interaction_style) profileHtml += '<span class="tag tag-green">搭子风格：' + (styleText[currentUser.interaction_style] || currentUser.interaction_style) + '</span>';
+    profileHtml += '</div></div>';
+    profileHtml += '<div class="card"><h3 style="font-size:15px;margin-bottom:12px;">兴趣标签</h3>' + (interestsHtml || '<p style="color:#999;font-size:13px;">暂无兴趣标签</p>') + '</div><div class="card"><h3 style="font-size:15px;margin-bottom:12px;">收到的评价 (' + ratings.length + ')</h3>' + (ratingsHtml || '<p style="color:#999;font-size:13px;">暂无评价</p>') + '</div><button class="btn btn-outline edit-btn" onclick="renderEditProfile()">编辑资料</button><button class="btn" style="width:calc(100% - 32px);margin:0 auto;display:block;background:#f5f5f5;color:#666;" onclick="logout()">退出登录</button>';
+    document.getElementById('app').innerHTML = wrap(profileHtml, 'prof');
 }
 
 async function renderEditProfile() {
@@ -537,9 +1287,428 @@ async function renderEditProfile() {
         const selected = currentUser.interests.includes(int);
         interestHtml += '<div class="interest-option ' + (selected?'selected':'') + '" id="edit-interest-' + idx + '" onclick="toggleEditInterest(' + idx + ')">' + int + '</div>';
     });
-    const html = '<div class="header"><h1>编辑资料</h1><span onclick="showPage(\'prof\')" style="cursor:pointer;font-size:24px;float:right;">←</span></div><div class="card"><div class="form-group"><label>昵称</label><input id="edit-nickname" value="' + currentUser.nickname + '"></div><div class="form-group"><label>性别</label><select id="edit-gender">' + genderHtml + '</select></div><div class="form-group"><label>年龄</label><input id="edit-age" type="number" value="' + (currentUser.age || '') + '"></div><div class="form-group"><label>学校</label><input id="edit-school" value="' + (currentUser.school || '') + '"></div><div class="form-group"><label>兴趣标签（多选）</label><div class="interest-selector">' + interestHtml + '</div></div><div class="form-group"><label>微信（匹配高分解锁）</label><input id="edit-wechat" value="' + (currentUser.contact_wechat || '') + '"></div><div class="form-group"><label>QQ（匹配高分解锁）</label><input id="edit-qq" value="' + (currentUser.contact_qq || '') + '"></div><div class="form-group"><label>手机（匹配高分解锁）</label><input id="edit-phone" value="' + (currentUser.contact_phone || '') + '"></div></div><button class="btn btn-purple" style="width:calc(100% - 32px);margin:0 16px;" onclick="saveProfile()">保存</button>';
+    const html = '<div class="header"><h1>编辑资料</h1><span onclick="showPage(\'prof\')" style="cursor:pointer;font-size:24px;float:right;">←</span></div><div class="card"><div class="form-group"><label>昵称</label><input id="edit-nickname" value="' + currentUser.nickname + '"></div><div class="form-group"><label>性别</label><select id="edit-gender">' + genderHtml + '</select></div><div class="form-group"><label>年龄</label><input id="edit-age" type="number" value="' + (currentUser.age || '') + '"></div><div class="form-group"><label>目标强度</label><div style="display:flex;gap:8px;"><select id="edit-goal-intensity" style="flex:1;"><option value="light"' + (currentUser.goal_intensity=='light'?' selected':'') + '>轻度（有兴趣尝试）</option><option value="medium"' + (currentUser.goal_intensity=='medium'?' selected':'') + '>中度（有明确计划）</option><option value="heavy"' + (currentUser.goal_intensity=='heavy'?' selected':'') + '>重度（目标坚定）</option></select></div><div style="font-size:12px;color:#999;margin-top:4px;">决定你与搭子的配合强度</div></div><div class="form-group"><label>作息类型</label><select id="edit-time-rhythm" style="width:100%;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:15px;"><option value="early"' + (currentUser.time_rhythm=='early'?' selected':'') + '>早起型（6:00-8:00活跃）</option><option value="day"' + (currentUser.time_rhythm=='day'?' selected':'') + '>日间型（9:00-18:00活跃）</option><option value="night"' + (currentUser.time_rhythm=='night'?' selected':'') + '>夜猫子型（20:00-24:00活跃）</option><option value="flexible"' + (currentUser.time_rhythm=='flexible'?' selected':'') + '>灵活型</option></select></div><div class="form-group"><label>学校</label><input id="edit-school" value="' + (currentUser.school || '') + '"></div><div class="form-group"><label>兴趣标签（多选）</label><div class="interest-selector">' + interestHtml + '</div></div><div class="form-group"><label>搭子类型偏好</label><select id="edit-interaction-style" style="width:100%;padding:14px 16px;border:2px solid #e2e8f0;border-radius:12px;font-size:15px;"><option value="compete"' + (currentUser.interaction_style=='compete'?' selected':'') + '>竞争型</option><option value="cooperate"' + (currentUser.interaction_style=='cooperate'?' selected':'') + '>合作型</option><option value="relaxed"' + (currentUser.interaction_style=='relaxed'?' selected':'') + '>休闲型</option></select></div><div class="form-group"><label>微信（匹配高分解锁）</label><input id="edit-wechat" value="' + (currentUser.contact_wechat || '') + '"></div><div class="form-group"><label>QQ（匹配高分解锁）</label><input id="edit-qq" value="' + (currentUser.contact_qq || '') + '"></div><div class="form-group"><label>手机（匹配高分解锁）</label><input id="edit-phone" value="' + (currentUser.contact_phone || '') + '"></div></div><button class="btn btn-purple" style="width:calc(100% - 32px);margin:0 16px;" onclick="saveProfile()">保存</button>';
     document.getElementById('app').innerHTML = wrap(html, 'prof');
     window.editInterests = [...currentUser.interests];
+}
+
+// ========== Setup Page (3-Step Flow) ==========
+let setupStep = 1;
+const setupData = {
+    avatar: '🎓',
+    nickname: '',
+    school: '',
+    department: '',
+    grade: '',
+    interests: [],
+    preferences: {}
+};
+
+const setupRandomNicknames = ['校园小太阳', '图书馆常客', '操场追风者', '咖啡续命人', '熬夜冠军', '早八战士', '食堂探险家', '宿舍开心果', '实验室幽灵', '操场散步人'];
+const setupRandomAvatars = ['🎓', '📚', '🏃', '🎨', '🎵', '💻', '🌟', '🔥', '💪', '🎯'];
+
+const setupSchoolList = ['清华大学','北京大学','复旦大学','上海交通大学','浙江大学','南京大学','武汉大学','中山大学','四川大学','华中科技大学','西安交通大学','同济大学','北京航空航天大学','其他院校'];
+
+const setupInterestConfig = {
+    '考研': { type: 'strong', levels: ['冲顶尖院校（985 / 头部 211）', '冲重点院校（普通 211 / 一本）', '只求上岸（二本 / 过线即可）'], intensities: ['极致自律（日均学习 6h+）', '稳定备考（日均学习 3-6h）', '佛系复习（日均学习 3h 内）', '临时抱佛脚（考前冲刺型）'] },
+    '考公': { type: 'strong', levels: ['冲高分（目标 150+）', '稳过线（目标 120+）', '佛系考（过线即可）'], intensities: ['极致自律（日均学习 6h+）', '稳定备考（日均学习 3-6h）', '佛系复习（日均学习 3h 内）', '临时抱佛脚（考前冲刺型）'] },
+    '四六级': { type: 'strong', levels: ['冲高分（目标 600+）', '稳过线（目标 425+）', '佛系考（过线即可）'], intensities: ['极致自律（日均学习 6h+）', '稳定备考（日均学习 3-6h）', '佛系复习（日均学习 3h 内）', '临时抱佛脚（考前冲刺型）'] },
+    '考证': { type: 'strong', levels: ['冲高分', '稳过线', '佛系考'], intensities: ['极致自律（日均学习 6h+）', '稳定备考（日均学习 3-6h）', '佛系复习（日均学习 3h 内）', '临时抱佛脚（考前冲刺型）'] },
+    '期末复习': { type: 'strong', levels: ['冲高分（目标 90+）', '稳过线（目标 60+）', '不挂科即可'], intensities: ['极致自律（日均学习 6h+）', '稳定备考（日均学习 3-6h）', '佛系复习（日均学习 3h 内）', '临时抱佛脚（考前冲刺型）'] },
+    '自习': { type: 'strong', levels: ['深度学习（钻研专业）', '巩固提升（补强薄弱）', '日常保持（跟上进度）'], intensities: ['极致自律（日均学习 6h+）', '稳定备考（日均学习 3-6h）', '佛系复习（日均学习 3h 内）', '临时抱佛脚（考前冲刺型）'] },
+    '跑步': { type: 'strong', levels: ['减脂塑形', '增肌强化', '保持健康'], intensities: ['每周 5 次以上', '每周 3-4 次', '每周 1-2 次', '偶尔随缘'] },
+    '健身': { type: 'strong', levels: ['减脂塑形', '增肌强化', '保持健康'], intensities: ['每周 5 次以上', '每周 3-4 次', '每周 1-2 次', '偶尔随缘'] },
+    '羽毛球': { type: 'strong', levels: ['竞技提升', '休闲娱乐', '随便打打'], intensities: ['每周 5 次以上', '每周 3-4 次', '每周 1-2 次', '偶尔随缘'] },
+    '篮球': { type: 'strong', levels: ['竞技提升', '休闲娱乐', '随便打打'], intensities: ['每周 5 次以上', '每周 3-4 次', '每周 1-2 次', '偶尔随缘'] },
+    '游泳': { type: 'strong', levels: ['减脂塑形', '技能提升', '休闲娱乐'], intensities: ['每周 5 次以上', '每周 3-4 次', '每周 1-2 次', '偶尔随缘'] },
+    '骑行': { type: 'strong', levels: ['长途骑行', '短途休闲', '代步通勤'], intensities: ['每周 5 次以上', '每周 3-4 次', '每周 1-2 次', '偶尔随缘'] },
+    '饭搭子': { type: 'weak', frequencies: ['几乎每天都约', '每周 2-3 次', '偶尔随缘约'], styles: ['AA 制，各付各的', '轮流请客', '都可以'], styleLabel: '相处偏好' },
+    '探店': { type: 'weak', frequencies: ['几乎每天都约', '每周 2-3 次', '偶尔随缘约'], styles: ['网红打卡', '小众探店', '随便逛逛'], styleLabel: '偏好风格' },
+    '看电影': { type: 'weak', frequencies: ['几乎每天都约', '每周 2-3 次', '偶尔随缘约'], styles: ['院线热门', '小众文艺', '悬疑烧脑'], styleLabel: '偏好风格' },
+    '逛展': { type: 'weak', frequencies: ['几乎每天都约', '每周 2-3 次', '偶尔随缘约'], styles: ['艺术展览', '科技展', '随便逛逛'], styleLabel: '偏好风格' },
+    '游戏': { type: 'weak', frequencies: ['几乎每天都约', '每周 2-3 次', '偶尔随缘约'], styles: ['竞技上分', '休闲娱乐', '单机剧情'], styleLabel: '偏好风格' },
+    '旅行': { type: 'weak', frequencies: ['每月 1 次', '每学期 1-2 次', '假期随缘'], styles: ['穷游背包', '舒适出行', '特种兵式'], styleLabel: '偏好风格' },
+    '早起打卡': { type: 'weak', frequencies: ['每天早起', '工作日早起', '偶尔早起'], styles: ['6:00 前', '6:00-7:00', '7:00-8:00'], styleLabel: '起床时间' },
+    '减肥': { type: 'weak', frequencies: ['每天打卡', '每周 3-4 次', '偶尔打卡'], styles: ['月减 5kg 以上', '月减 2-3kg', '保持体重'], styleLabel: '目标强度' },
+    '图书馆占座': { type: 'weak', frequencies: ['每天占座', '每周 3-4 次', '偶尔占座'], styles: ['早到抢好位', '随缘有座就行', '帮朋友一起占'], styleLabel: '偏好风格' },
+    '校园散步': { type: 'weak', frequencies: ['每天散步', '每周 3-4 次', '偶尔散步'], styles: ['操场绕圈', '校园漫游', '夜跑结合'], styleLabel: '偏好风格' }
+};
+
+const setupInterestCategories = [
+    { name: '学习备考类', icon: '📚', tags: ['考研', '考公', '四六级', '考证', '期末复习', '自习'] },
+    { name: '运动健身类', icon: '🏃', tags: ['跑步', '健身', '羽毛球', '篮球', '游泳', '骑行'] },
+    { name: '休闲娱乐类', icon: '🎮', tags: ['饭搭子', '探店', '看电影', '逛展', '游戏', '旅行'] },
+    { name: '生活陪伴类', icon: '✨', tags: ['早起打卡', '减肥', '图书馆占座', '校园散步'] }
+];
+
+function renderSetupProfile() {
+    setupStep = 1;
+    setupData.avatar = currentUser?.avatar_color ? '' : '🎓';
+    setupData.nickname = currentUser?.nickname || '';
+    setupData.school = currentUser?.school || '';
+    setupData.department = currentUser?.department || '';
+    setupData.grade = currentUser?.grade || '';
+    setupData.interests = currentUser?.interests || [];
+    setupData.preferences = {};
+    
+    // 初始化默认偏好
+    setupData.interests.forEach(tag => {
+        const cfg = setupInterestConfig[tag];
+        if (cfg) {
+            setupData.preferences[tag] = cfg.type === 'strong' 
+                ? { level: 2, intensity: 2 }
+                : { frequency: 2, style: 1 };
+        }
+    });
+    
+    const schoolOpts = setupSchoolList.map(s => '<option value="'+s+'" '+(setupData.school===s?'selected':'')+'>'+s+'</option>').join('');
+    
+    const html = '<div class="setup-page">' +
+        '<div class="setup-header"><button class="setup-back-btn" id="setup-back-btn" onclick="setupGoBack()">&#8592;</button></div>' +
+        '<div class="setup-progress-wrap">' +
+        '<div class="setup-progress-bar">' +
+        '<div class="setup-progress-step active" id="setup-bar-1"></div>' +
+        '<div class="setup-progress-step" id="setup-bar-2"></div>' +
+        '<div class="setup-progress-step" id="setup-bar-3"></div>' +
+        '</div><div class="setup-progress-text" id="setup-progress-text">当前第 1 步，共 3 步</div></div>' +
+        
+        '<div class="setup-step-page active" id="setup-step-1">' +
+        '<div class="setup-page-title"><h1>欢迎加入，先简单认识一下</h1><p>填写基本信息，开启你的搭子之旅</p></div>' +
+        '<div class="setup-content">' +
+        '<div class="setup-avatar-section">' +
+        '<div class="setup-avatar-wrap">' +
+        '<div class="setup-avatar-img" id="setup-avatar-img">' + setupData.avatar + '</div>' +
+        '<div class="setup-avatar-change" onclick="setupChangeAvatar()" title="换一个">&#8634;</div></div>' +
+        '<div class="setup-avatar-hint">点击头像可更换随机校园风头像</div></div>' +
+        '<div class="form-group"><label class="form-label">昵称 <span style="color:#999;font-weight:400;font-size:12px;">限10字内</span></label>' +
+        '<div class="setup-nickname-wrap">' +
+        '<input type="text" class="form-input" id="setup-nickname-input" placeholder="给自己起个昵称" maxlength="10" value="' + setupData.nickname + '">' +
+        '<button class="setup-nickname-random" onclick="setupRandomNickname()">随机推荐</button></div></div>' +
+        '<div class="form-group"><label class="form-label">院校 <span style="color:#ef4444;">*</span></label>' +
+        '<div class="setup-select-wrap"><select class="form-input" id="setup-school-select" style="appearance:none;padding-right:40px;">' +
+        '<option value="">请选择学校</option>' + schoolOpts + '</select>' +
+        '<span class="setup-select-arrow">&#9662;</span></div></div>' +
+        '<div class="form-group"><label class="form-label">院系</label>' +
+        '<div class="setup-select-wrap"><select class="form-input" id="setup-dept-select" style="appearance:none;padding-right:40px;">' +
+        '<option value="">请选择院系</option>' +
+        '<option value="计算机学院">计算机学院</option><option value="电子信息学院">电子信息学院</option>' +
+        '<option value="商学院">商学院</option><option value="艺术学院">艺术学院</option>' +
+        '<option value="理学院">理学院</option><option value="文学院">文学院</option>' +
+        '<option value="法学院">法学院</option><option value="医学院">医学院</option>' +
+        '<option value="其他">其他院系</option></select>' +
+        '<span class="setup-select-arrow">&#9662;</span></div></div>' +
+        '<div class="form-group"><label class="form-label">年级 <span style="color:#999;font-weight:400;font-size:12px;">选填</span></label>' +
+        '<div class="setup-grade-grid" id="setup-grade-grid">' +
+        ['大一','大二','大三','大四','研究生'].map((g,i) => '<div class="setup-grade-option" data-value="'+(i+1)+'" onclick="setupSelectGrade(this)">'+g+'</div>').join('') +
+        '</div></div></div></div>' +
+        
+        '<div class="setup-step-page" id="setup-step-2">' +
+        '<div class="setup-page-title"><h1>你想找什么类型的搭子？</h1><p>选得越准，匹配越合得来（至少选 1 个）</p></div>' +
+        '<div class="setup-content" id="setup-interests-content"></div></div>' +
+        
+        '<div class="setup-step-page" id="setup-step-3">' +
+        '<div class="setup-page-title"><h1>微调一下，匹配更精准</h1><p>根据你选的方向设置，都可以跳过</p></div>' +
+        '<div class="setup-content" id="setup-pref-content"></div>' +
+        '<div class="setup-skip-all"><button class="setup-skip-all-btn" onclick="setupFinish()">跳过所有设置，直接完成注册</button></div>' +
+        '</div>' +
+        
+        '<div class="setup-success-page" id="setup-success">' +
+        '<div class="setup-success-icon">&#10003;</div>' +
+        '<div class="setup-success-title">注册成功！</div>' +
+        '<div class="setup-success-desc">已根据你的偏好生成专属匹配档案</div>' +
+        '<div class="setup-success-tags" id="setup-success-tags"></div>' +
+        '<button class="btn btn-purple" style="width:100%;" onclick="showPage(\'home\')">开始匹配</button>' +
+        '</div>' +
+        
+        '<div class="setup-bottom-action" id="setup-bottom-action">' +
+        '<button class="btn btn-purple" id="setup-next-btn" onclick="setupNextStep()">下一步</button>' +
+        '<button class="btn" style="width:100%;margin-top:10px;background:transparent;color:#6b7280;border:none;font-size:14px;display:none;" id="setup-skip-btn" onclick="setupSkipStep()">跳过</button>' +
+        '<div style="text-align:center;font-size:12px;color:#6b7280;margin-top:10px;display:none;" id="setup-bottom-hint">所有偏好后续都可以在「我的 - 匹配设置」里修改</div>' +
+        '</div></div>';
+    
+    document.getElementById('app').innerHTML = html;
+    
+    // 设置初始选中值
+    if (setupData.department) {
+        const deptEl = document.getElementById('setup-dept-select');
+        if (deptEl) deptEl.value = setupData.department;
+    }
+    if (setupData.grade) {
+        document.querySelectorAll('#setup-grade-grid .setup-grade-option').forEach(o => {
+            if (o.dataset.value == setupData.grade) o.classList.add('selected');
+        });
+    }
+    
+    renderSetupInterests();
+    setupUpdateUI();
+}
+
+function setupChangeAvatar() {
+    const random = setupRandomAvatars[Math.floor(Math.random() * setupRandomAvatars.length)];
+    document.getElementById('setup-avatar-img').textContent = random;
+    setupData.avatar = random;
+}
+
+function setupRandomNickname() {
+    const random = setupRandomNicknames[Math.floor(Math.random() * setupRandomNicknames.length)];
+    document.getElementById('setup-nickname-input').value = random;
+    setupData.nickname = random;
+}
+
+function setupSelectGrade(el) {
+    document.querySelectorAll('#setup-grade-grid .setup-grade-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    setupData.grade = el.dataset.value;
+}
+
+function renderSetupInterests() {
+    const container = document.getElementById('setup-interests-content');
+    if (!container) return;
+    let html = '';
+    setupInterestCategories.forEach(cat => {
+        html += '<div class="setup-interest-category"><div class="setup-category-title">' +
+            '<span class="setup-category-icon">' + cat.icon + '</span> ' + cat.name + '</div>' +
+            '<div class="setup-tag-grid">';
+        cat.tags.forEach(tag => {
+            const isSelected = setupData.interests.includes(tag);
+            html += '<div class="setup-tag-item ' + (isSelected ? 'selected' : '') + '" onclick="setupToggleTag(this, \'' + tag + '\')">' +
+                tag + '<span class="setup-tag-check">&#10003;</span>' +
+                '<span class="setup-pref-btn" onclick="event.stopPropagation();setupGoToPrefFromTag(\'' + tag + '\')">设偏好</span></div>';
+        });
+        html += '</div></div>';
+    });
+    html += '<div style="text-align:center;font-size:13px;color:#667eea;font-weight:600;margin-top:8px;" id="setup-selected-count">已选 ' + setupData.interests.length + ' 个</div>';
+    html += '<div style="text-align:center;font-size:12px;color:#999;margin-top:8px;">选完可以设置更细的匹配偏好，也可以直接跳过</div>';
+    container.innerHTML = html;
+}
+
+function setupToggleTag(el, tag) {
+    const isSelected = el.classList.contains('selected');
+    if (isSelected) {
+        el.classList.remove('selected');
+        setupData.interests = setupData.interests.filter(t => t !== tag);
+        delete setupData.preferences[tag];
+    } else {
+        el.classList.add('selected');
+        setupData.interests.push(tag);
+        // 初始化默认偏好
+        const cfg = setupInterestConfig[tag];
+        if (cfg) {
+            setupData.preferences[tag] = cfg.type === 'strong' 
+                ? { level: 2, intensity: 2 }
+                : { frequency: 2, style: 1 };
+        }
+    }
+    const countEl = document.getElementById('setup-selected-count');
+    if (countEl) countEl.textContent = '已选 ' + setupData.interests.length + ' 个';
+    setupUpdateNextBtn();
+}
+
+function setupGoToPrefFromTag(tag) {
+    if (!setupData.interests.includes(tag)) return;
+    setupStep = 3;
+    setupUpdateUI();
+    renderSetupPrefCards();
+    setTimeout(() => {
+        const card = document.querySelector('[data-pref-tag="' + tag + '"]');
+        if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+}
+
+function renderSetupPrefCards() {
+    const container = document.getElementById('setup-pref-content');
+    if (!container) return;
+    let html = '';
+    setupData.interests.forEach(tag => {
+        const cfg = setupInterestConfig[tag];
+        if (!cfg) return;
+        const prefs = setupData.preferences[tag] || (cfg.type === 'strong' ? { level: 2, intensity: 2 } : { frequency: 2, style: 1 });
+        setupData.preferences[tag] = prefs;
+        
+        if (cfg.type === 'strong') {
+            const levelsHtml = cfg.levels.map((l, i) => 
+                '<div class="setup-radio-option ' + (prefs.level === i + 1 ? 'selected' : '') + '" data-value="' + (i + 1) + '" onclick="setupSelectPref(this, \'' + tag + '\', \'level\')">' +
+                '<div class="setup-radio-circle"></div><div class="setup-radio-text">' + l + '</div></div>'
+            ).join('');
+            const intensitiesHtml = cfg.intensities.map((l, i) => 
+                '<div class="setup-radio-option ' + (prefs.intensity === i + 1 ? 'selected' : '') + '" data-value="' + (i + 1) + '" onclick="setupSelectPref(this, \'' + tag + '\', \'intensity\')">' +
+                '<div class="setup-radio-circle"></div><div class="setup-radio-text">' + l + '</div></div>'
+            ).join('');
+            html += '<div class="setup-pref-card" data-pref-tag="' + tag + '">' +
+                '<div class="setup-pref-card-title">' + tag + '搭子偏好 <span class="setup-tag-badge">强目标</span></div>' +
+                '<div class="setup-pref-row"><div class="setup-pref-row-label">目标分层</div><div class="setup-radio-group">' + levelsHtml + '</div></div>' +
+                '<div class="setup-pref-row"><div class="setup-pref-row-label">目标强度</div>' +
+                '<div class="setup-pref-row-hint">强度对应你的日常投入程度，系统会匹配节奏相近的人</div>' +
+                '<div class="setup-radio-group">' + intensitiesHtml + '</div></div></div>';
+        } else {
+            const freqHtml = cfg.frequencies.map((l, i) => 
+                '<div class="setup-radio-option ' + (prefs.frequency === i + 1 ? 'selected' : '') + '" data-value="' + (i + 1) + '" onclick="setupSelectPref(this, \'' + tag + '\', \'frequency\')">' +
+                '<div class="setup-radio-circle"></div><div class="setup-radio-text">' + l + '</div></div>'
+            ).join('');
+            const styleHtml = cfg.styles.map((l, i) => 
+                '<div class="setup-radio-option ' + (prefs.style === i + 1 ? 'selected' : '') + '" data-value="' + (i + 1) + '" onclick="setupSelectPref(this, \'' + tag + '\', \'style\')">' +
+                '<div class="setup-radio-circle"></div><div class="setup-radio-text">' + l + '</div></div>'
+            ).join('');
+            html += '<div class="setup-pref-card" data-pref-tag="' + tag + '">' +
+                '<div class="setup-pref-card-title">' + tag + '偏好 <span class="setup-tag-badge" style="background:linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);">休闲</span></div>' +
+                '<div class="setup-pref-row"><div class="setup-pref-row-label">约伴频率</div><div class="setup-radio-group">' + freqHtml + '</div></div>' +
+                '<div class="setup-pref-row"><div class="setup-pref-row-label">' + cfg.styleLabel + '</div><div class="setup-radio-group">' + styleHtml + '</div></div></div>';
+        }
+    });
+    container.innerHTML = html;
+}
+
+function setupSelectPref(el, tag, field) {
+    const group = el.closest('.setup-radio-group');
+    group.querySelectorAll('.setup-radio-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    if (!setupData.preferences[tag]) setupData.preferences[tag] = {};
+    setupData.preferences[tag][field] = parseInt(el.dataset.value);
+}
+
+function setupGoBack() {
+    if (setupStep > 1) {
+        if (setupStep === 3) {
+            setupStep = 2;
+            renderSetupInterests();
+        } else {
+            setupStep = 1;
+        }
+        setupUpdateUI();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function setupNextStep() {
+    if (setupStep === 1) {
+        const nickname = document.getElementById('setup-nickname-input').value.trim();
+        const school = document.getElementById('setup-school-select').value;
+        if (!nickname) { alert('请填写昵称'); return; }
+        if (!school) { alert('请选择学校'); return; }
+        setupData.nickname = nickname;
+        setupData.school = school;
+        setupData.department = document.getElementById('setup-dept-select').value;
+        setupStep = 2;
+        renderSetupInterests();
+    } else if (setupStep === 2) {
+        if (setupData.interests.length === 0) {
+            alert('请至少选择 1 个兴趣标签');
+            return;
+        }
+        setupStep = 3;
+        renderSetupPrefCards();
+    } else if (setupStep === 3) {
+        setupSaveAndFinish();
+        return;
+    }
+    setupUpdateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setupSkipStep() {
+    if (setupStep === 2) {
+        setupStep = 3;
+        renderSetupPrefCards();
+    } else if (setupStep === 3) {
+        setupSaveAndFinish();
+        return;
+    }
+    setupUpdateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setupFinish() {
+    setupSaveAndFinish();
+}
+
+async function setupSaveAndFinish() {
+    showLoading();
+    const data = {
+        nickname: setupData.nickname || (currentUser?.nickname || ''),
+        school: setupData.school,
+        department: setupData.department,
+        grade: setupData.grade,
+        interests: setupData.interests,
+        preferences: JSON.stringify(setupData.preferences)
+    };
+    const res = await api('/api/profile', 'PUT', data);
+    hideLoading();
+    if (res.id) {
+        currentUser = res;
+        const successPage = document.getElementById('setup-success');
+        const bottomAction = document.getElementById('setup-bottom-action');
+        const backBtn = document.getElementById('setup-back-btn');
+        const progressText = document.getElementById('setup-progress-text');
+        if (successPage) {
+            document.querySelectorAll('.setup-step-page').forEach(p => p.classList.remove('active'));
+            successPage.classList.add('active');
+        }
+        if (bottomAction) bottomAction.style.display = 'none';
+        if (backBtn) backBtn.style.visibility = 'hidden';
+        if (progressText) progressText.textContent = '注册完成';
+        const tagsContainer = document.getElementById('setup-success-tags');
+        if (tagsContainer) {
+            tagsContainer.innerHTML = setupData.interests.map(t =>
+                '<span class="setup-success-tag">' + t + '</span>'
+            ).join('');
+        }
+    } else {
+        alert('保存失败，请稍后再试');
+    }
+}
+
+function setupUpdateUI() {
+    document.querySelectorAll('.setup-step-page').forEach((page, i) => {
+        page.classList.toggle('active', i + 1 === setupStep);
+    });
+    
+    for (let i = 1; i <= 3; i++) {
+        const bar = document.getElementById('setup-bar-' + i);
+        if (bar) bar.classList.toggle('active', i <= setupStep);
+    }
+    
+    const progressText = document.getElementById('setup-progress-text');
+    if (progressText) progressText.textContent = '当前第 ' + setupStep + ' 步，共 3 步';
+    
+    const nextBtn = document.getElementById('setup-next-btn');
+    const skipBtn = document.getElementById('setup-skip-btn');
+    const backBtn = document.getElementById('setup-back-btn');
+    const hint = document.getElementById('setup-bottom-hint');
+    
+    if (setupStep === 1) {
+        nextBtn.textContent = '下一步';
+        skipBtn.style.display = 'none';
+        backBtn.style.visibility = 'hidden';
+        hint.style.display = 'none';
+    } else if (setupStep === 2) {
+        nextBtn.textContent = '下一步';
+        skipBtn.style.display = 'block';
+        skipBtn.textContent = '跳过';
+        backBtn.style.visibility = 'visible';
+        hint.style.display = 'none';
+        setupUpdateNextBtn();
+    } else if (setupStep === 3) {
+        nextBtn.textContent = '完成注册';
+        skipBtn.style.display = 'block';
+        skipBtn.textContent = '跳过，直接进入';
+        backBtn.style.visibility = 'visible';
+        hint.style.display = 'block';
+    }
+}
+
+function setupUpdateNextBtn() {
+    const nextBtn = document.getElementById('setup-next-btn');
+    if (!nextBtn) return;
+    if (setupStep === 2) {
+        const disabled = setupData.interests.length === 0;
+        nextBtn.disabled = disabled;
+        nextBtn.style.opacity = disabled ? '0.5' : '1';
+        nextBtn.style.cursor = disabled ? 'not-allowed' : 'pointer';
+    } else {
+        nextBtn.disabled = false;
+        nextBtn.style.opacity = '1';
+        nextBtn.style.cursor = 'pointer';
+    }
 }
 
 function toggleEditInterest(idx) {
@@ -557,6 +1726,9 @@ async function saveProfile() {
         age: parseInt(document.getElementById('edit-age').value) || 0,
         school: document.getElementById('edit-school').value,
         interests: window.editInterests,
+        goal_intensity: document.getElementById('edit-goal-intensity').value,
+        time_rhythm: document.getElementById('edit-time-rhythm').value,
+        interaction_style: document.getElementById('edit-interaction-style').value,
         contact_wechat: document.getElementById('edit-wechat').value,
         contact_qq: document.getElementById('edit-qq').value,
         contact_phone: document.getElementById('edit-phone').value

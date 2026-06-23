@@ -15,7 +15,7 @@ def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, salt TEXT NOT NULL, nickname TEXT NOT NULL, gender TEXT DEFAULT 'secret', age INTEGER DEFAULT 0, school TEXT DEFAULT '', interests TEXT DEFAULT '[]', contact_wechat TEXT DEFAULT '', contact_qq TEXT DEFAULT '', contact_phone TEXT DEFAULT '', coins INTEGER DEFAULT 10, avatar_color TEXT DEFAULT '#6C63FF', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, salt TEXT NOT NULL, nickname TEXT NOT NULL, gender TEXT DEFAULT 'secret', age INTEGER DEFAULT 0, school TEXT DEFAULT '', department TEXT DEFAULT '', grade TEXT DEFAULT '', interests TEXT DEFAULT '[]', preferences TEXT DEFAULT '{}', goal_intensity TEXT DEFAULT 'light', time_rhythm TEXT DEFAULT 'flexible', interaction_style TEXT DEFAULT 'relaxed', contact_wechat TEXT DEFAULT '', contact_qq TEXT DEFAULT '', contact_phone TEXT DEFAULT '', coins INTEGER DEFAULT 10, avatar_color TEXT DEFAULT '#6C63FF', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS match_rooms (id INTEGER PRIMARY KEY AUTOINCREMENT, user1_id INTEGER NOT NULL, user2_id INTEGER NOT NULL, match_type TEXT NOT NULL, status TEXT DEFAULT 'active', ended_by INTEGER, ended_at TIMESTAMP, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, room_id INTEGER NOT NULL, sender_id INTEGER NOT NULL, content TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS ratings (id INTEGER PRIMARY KEY AUTOINCREMENT, room_id INTEGER NOT NULL, rater_id INTEGER NOT NULL, rating INTEGER NOT NULL, comment TEXT DEFAULT '', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
@@ -40,12 +40,12 @@ def get_user_id_from_token(token):
 def get_user_by_id(user_id):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('SELECT id,username,nickname,gender,age,school,interests,contact_wechat,contact_qq,contact_phone,coins,avatar_color,created_at FROM users WHERE id = ?', (user_id,))
+    c.execute('SELECT id,username,nickname,gender,age,school,department,grade,interests,preferences,goal_intensity,time_rhythm,interaction_style,contact_wechat,contact_qq,contact_phone,coins,avatar_color,created_at FROM users WHERE id = ?', (user_id,))
     row = c.fetchone()
     conn.close()
     if not row:
         return None
-    return {'id':row[0],'username':row[1],'nickname':row[2],'gender':row[3],'age':row[4],'school':row[5],'interests':json.loads(row[6]),'contact_wechat':row[7],'contact_qq':row[8],'contact_phone':row[9],'coins':row[10],'avatar_color':row[11],'created_at':row[12]}
+    return {'id':row[0],'username':row[1],'nickname':row[2],'gender':row[3],'age':row[4],'school':row[5],'department':row[6],'grade':row[7],'interests':json.loads(row[8]),'preferences':json.loads(row[9]),'goal_intensity':row[10],'time_rhythm':row[11],'interaction_style':row[12],'contact_wechat':row[13],'contact_qq':row[14],'contact_phone':row[15],'coins':row[16],'avatar_color':row[17],'created_at':row[18]}
 
 def get_other_user_in_room(room_id, user_id):
     conn = sqlite3.connect(DB_PATH)
@@ -125,6 +125,11 @@ class APIHandler(BaseHTTPRequestHandler):
             username = data.get('username', '').strip()
             password = data.get('password', '')
             nickname = data.get('nickname', '').strip()
+            school = data.get('school', '')
+            department = data.get('department', '')
+            grade = data.get('grade', '')
+            interests = data.get('interests', [])
+            preferences = data.get('preferences', '{}')
             if not username or not password or not nickname:
                 self.send_json({'error': 'Missing fields'}, 400)
                 return
@@ -137,7 +142,7 @@ class APIHandler(BaseHTTPRequestHandler):
                     return
                 salt = str(uuid.uuid4())[:8]
                 password_hash = hash_password(password, salt)
-                c.execute('INSERT INTO users (username, password_hash, salt, nickname) VALUES (?, ?, ?, ?)', (username, password_hash, salt, nickname))
+                c.execute('INSERT INTO users (username, password_hash, salt, nickname, school, department, grade, interests, preferences) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)', (username, password_hash, salt, nickname, school, department, grade, json.dumps(interests), preferences))
                 conn.commit()
                 self.send_json({'message': 'Register success'}, 201)
             except Exception as e:
@@ -480,7 +485,10 @@ class APIHandler(BaseHTTPRequestHandler):
             self.send_json(ratings, 200)
         elif path == '/' or path == '/index.html':
             self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
+            self.send_header('Content-Type', 'text/html; charset=utf-8')
+            self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
+            self.send_header('Pragma', 'no-cache')
+            self.send_header('Expires', '0')
             self.end_headers()
             with open(os.path.join(os.path.dirname(__file__), 'templates', 'index.html'), 'rb') as f:
                 self.wfile.write(f.read())
@@ -501,7 +509,13 @@ class APIHandler(BaseHTTPRequestHandler):
             gender = data.get('gender')
             age = data.get('age')
             school = data.get('school')
+            department = data.get('department')
+            grade = data.get('grade')
             interests = data.get('interests')
+            preferences = data.get('preferences')
+            goal_intensity = data.get('goal_intensity')
+            time_rhythm = data.get('time_rhythm')
+            interaction_style = data.get('interaction_style')
             contact_wechat = data.get('contact_wechat')
             contact_qq = data.get('contact_qq')
             contact_phone = data.get('contact_phone')
@@ -522,9 +536,27 @@ class APIHandler(BaseHTTPRequestHandler):
                 if school:
                     updates.append('school = ?')
                     params.append(school)
+                if department:
+                    updates.append('department = ?')
+                    params.append(department)
+                if grade:
+                    updates.append('grade = ?')
+                    params.append(grade)
                 if interests:
                     updates.append('interests = ?')
                     params.append(json.dumps(interests))
+                if preferences:
+                    updates.append('preferences = ?')
+                    params.append(preferences)
+                if goal_intensity:
+                    updates.append('goal_intensity = ?')
+                    params.append(goal_intensity)
+                if time_rhythm:
+                    updates.append('time_rhythm = ?')
+                    params.append(time_rhythm)
+                if interaction_style:
+                    updates.append('interaction_style = ?')
+                    params.append(interaction_style)
                 if contact_wechat:
                     updates.append('contact_wechat = ?')
                     params.append(contact_wechat)
