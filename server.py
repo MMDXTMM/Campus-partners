@@ -15,11 +15,12 @@ def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, salt TEXT NOT NULL, nickname TEXT NOT NULL, gender TEXT DEFAULT 'secret', age INTEGER DEFAULT 0, school TEXT DEFAULT '', department TEXT DEFAULT '', grade TEXT DEFAULT '', interests TEXT DEFAULT '[]', preferences TEXT DEFAULT '{}', goal_intensity TEXT DEFAULT 'light', time_rhythm TEXT DEFAULT 'flexible', interaction_style TEXT DEFAULT 'relaxed', contact_wechat TEXT DEFAULT '', contact_qq TEXT DEFAULT '', contact_phone TEXT DEFAULT '', coins INTEGER DEFAULT 10, avatar_color TEXT DEFAULT '#6C63FF', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT UNIQUE NOT NULL, password_hash TEXT NOT NULL, salt TEXT NOT NULL, nickname TEXT NOT NULL, gender TEXT DEFAULT 'secret', age INTEGER DEFAULT 0, school TEXT DEFAULT '', department TEXT DEFAULT '', grade TEXT DEFAULT '', interests TEXT DEFAULT '[]', preferences TEXT DEFAULT '{}', goal_intensity TEXT DEFAULT 'light', time_rhythm TEXT DEFAULT 'flexible', interaction_style TEXT DEFAULT 'relaxed', contact_wechat TEXT DEFAULT '', contact_qq TEXT DEFAULT '', contact_phone TEXT DEFAULT '', coins INTEGER DEFAULT 10, credit_score INTEGER DEFAULT 100, avatar_color TEXT DEFAULT '#6C63FF', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS match_rooms (id INTEGER PRIMARY KEY AUTOINCREMENT, user1_id INTEGER NOT NULL, user2_id INTEGER NOT NULL, match_type TEXT NOT NULL, status TEXT DEFAULT 'active', ended_by INTEGER, ended_at TIMESTAMP, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS messages (id INTEGER PRIMARY KEY AUTOINCREMENT, room_id INTEGER NOT NULL, sender_id INTEGER NOT NULL, content TEXT NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS ratings (id INTEGER PRIMARY KEY AUTOINCREMENT, room_id INTEGER NOT NULL, rater_id INTEGER NOT NULL, rating INTEGER NOT NULL, comment TEXT DEFAULT '', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS tokens (token TEXT PRIMARY KEY, user_id INTEGER NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS check_ins (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, check_in_date TEXT NOT NULL, coins_earned INTEGER DEFAULT 1, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id, check_in_date))''')
     conn.commit()
     conn.close()
 
@@ -37,15 +38,76 @@ def get_user_id_from_token(token):
     conn.close()
     return row[0] if row else None
 
+def get_consecutive_check_ins(user_id):
+    """获取用户连续签到天数"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    today = datetime.now().strftime('%Y-%m-%d')
+    c.execute('SELECT check_in_date FROM check_ins WHERE user_id = ? ORDER BY check_in_date DESC', (user_id,))
+    rows = c.fetchall()
+    conn.close()
+    if not rows:
+        return 0
+    consecutive = 0
+    check_date = datetime.strptime(today, '%Y-%m-%d')
+    for row in rows:
+        date_str = row[0]
+        record_date = datetime.strptime(date_str, '%Y-%m-%d')
+        diff = (check_date - record_date).days
+        if diff == consecutive:
+            consecutive += 1
+            check_date = record_date
+        else:
+            break
+    return consecutive
+
+def has_checked_in_today(user_id):
+    """检查用户今天是否已签到"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    today = datetime.now().strftime('%Y-%m-%d')
+    c.execute('SELECT id FROM check_ins WHERE user_id = ? AND check_in_date = ?', (user_id, today))
+    row = c.fetchone()
+    conn.close()
+    return row is not None
+
+def do_check_in(user_id):
+    """执行签到，返回获得的校园币数量"""
+    if has_checked_in_today(user_id):
+        return None, "今天已经签到过了"
+    
+    consecutive = get_consecutive_check_ins(user_id)
+    today = datetime.now().strftime('%Y-%m-%d')
+    
+    # 基础奖励1币，连续7天额外奖励2币
+    coins_earned = 1
+    if consecutive > 0 and consecutive % 7 == 0:
+        coins_earned += 2
+    
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    try:
+        c.execute('INSERT INTO check_ins (user_id, check_in_date, coins_earned) VALUES (?, ?, ?)', 
+                  (user_id, today, coins_earned))
+        c.execute('UPDATE users SET coins = coins + ? WHERE id = ?', (coins_earned, user_id))
+        conn.commit()
+        new_consecutive = consecutive + 1
+        return {'coins_earned': coins_earned, 'consecutive_days': new_consecutive}, None
+    except Exception as e:
+        conn.rollback()
+        return None, str(e)
+    finally:
+        conn.close()
+
 def get_user_by_id(user_id):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('SELECT id,username,nickname,gender,age,school,department,grade,interests,preferences,goal_intensity,time_rhythm,interaction_style,contact_wechat,contact_qq,contact_phone,coins,avatar_color,created_at FROM users WHERE id = ?', (user_id,))
+    c.execute('SELECT id,username,nickname,gender,age,school,department,grade,interests,preferences,goal_intensity,time_rhythm,interaction_style,contact_wechat,contact_qq,contact_phone,coins,credit_score,avatar_color,created_at FROM users WHERE id = ?', (user_id,))
     row = c.fetchone()
     conn.close()
     if not row:
         return None
-    return {'id':row[0],'username':row[1],'nickname':row[2],'gender':row[3],'age':row[4],'school':row[5],'department':row[6],'grade':row[7],'interests':json.loads(row[8]),'preferences':json.loads(row[9]),'goal_intensity':row[10],'time_rhythm':row[11],'interaction_style':row[12],'contact_wechat':row[13],'contact_qq':row[14],'contact_phone':row[15],'coins':row[16],'avatar_color':row[17],'created_at':row[18]}
+    return {'id':row[0],'username':row[1],'nickname':row[2],'gender':row[3],'age':row[4],'school':row[5],'department':row[6],'grade':row[7],'interests':json.loads(row[8]),'preferences':json.loads(row[9]),'goal_intensity':row[10],'time_rhythm':row[11],'interaction_style':row[12],'contact_wechat':row[13],'contact_qq':row[14],'contact_phone':row[15],'coins':row[16],'credit_score':row[17],'avatar_color':row[18],'created_at':row[19]}
 
 def get_other_user_in_room(room_id, user_id):
     conn = sqlite3.connect(DB_PATH)
@@ -65,6 +127,92 @@ def get_last_message(room_id):
     row = c.fetchone()
     conn.close()
     return row[0] if row else ''
+
+def update_credit_score(user_id):
+    """根据用户收到的评价更新信用分"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    # 获取用户收到的所有评价（不是自己给的评价）
+    c.execute('''
+        SELECT r.rating FROM ratings r 
+        JOIN match_rooms m ON r.room_id = m.id 
+        WHERE (m.user1_id = ? OR m.user2_id = ?) AND r.rater_id != ?
+    ''', (user_id, user_id, user_id))
+    ratings = [row[0] for row in c.fetchall()]
+    
+    # 计算信用分：初始100分，只有全部5星满分才能保持100分
+    # 5星+3分，4星-5分，3星-15分，2星-30分，1星-50分
+    base_score = 100
+    score_change = 0
+    total_count = len(ratings)
+    if total_count == 0:
+        new_score = 100
+    elif all(r == 5 for r in ratings):
+        new_score = 100  # 全部5星满分，保持100分
+    else:
+        for r in ratings:
+            if r == 5:
+                score_change += 3
+            elif r == 4:
+                score_change -= 5
+            elif r == 3:
+                score_change -= 15
+            elif r == 2:
+                score_change -= 30
+            elif r == 1:
+                score_change -= 50
+        new_score = max(0, min(99, 100 + score_change))  # 最高99分，不能到100
+    
+    c.execute('UPDATE users SET credit_score = ? WHERE id = ?', (new_score, user_id))
+    conn.commit()
+    conn.close()
+    return new_score
+
+def get_credit_info(user_id):
+    """获取用户信用详情"""
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT credit_score FROM users WHERE id = ?', (user_id,))
+    row = c.fetchone()
+    if not row:
+        conn.close()
+        return None
+    credit_score = row[0]
+    
+    # 获取评价统计
+    c.execute('''
+        SELECT r.rating, COUNT(*) FROM ratings r 
+        JOIN match_rooms m ON r.room_id = m.id 
+        WHERE (m.user1_id = ? OR m.user2_id = ?) AND r.rater_id != ?
+        GROUP BY r.rating
+    ''', (user_id, user_id, user_id))
+    rating_stats = dict(c.fetchall())
+    
+    total_ratings = sum(rating_stats.values())
+    conn.close()
+    
+    # 计算信用等级（分数范围0-100）
+    if credit_score >= 90:
+        level = '🌟 优秀'
+        level_color = '#52c41a'
+    elif credit_score >= 75:
+        level = '✅ 良好'
+        level_color = '#1890ff'
+    elif credit_score >= 60:
+        level = '⚠️ 一般'
+        level_color = '#faad14'
+    else:
+        level = '❌ 较差'
+        level_color = '#f5222d'
+    
+    return {
+        'credit_score': credit_score,
+        'level': level,
+        'level_color': level_color,
+        'total_ratings': total_ratings,
+        'rating_stats': rating_stats,
+        'good_rate': int((rating_stats.get(5, 0) + rating_stats.get(4, 0)) / max(total_ratings, 1) * 100) if total_ratings > 0 else 100
+    }
 
 def get_matches(user_id):
     conn = sqlite3.connect(DB_PATH)
@@ -323,6 +471,22 @@ class APIHandler(BaseHTTPRequestHandler):
             finally:
                 conn.close()
 
+        elif path == '/api/checkin':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            result, error = do_check_in(user_id)
+            if error:
+                self.send_json({'error': error}, 400)
+                return
+            user = get_user_by_id(user_id)
+            self.send_json({
+                'message': '签到成功！',
+                'coins_earned': result['coins_earned'],
+                'consecutive_days': result['consecutive_days'],
+                'total_coins': user['coins']
+            }, 200)
+
         elif path == '/api/room/rate':
             user_id = self.require_auth()
             if not user_id:
@@ -337,12 +501,15 @@ class APIHandler(BaseHTTPRequestHandler):
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
             try:
-                c.execute('SELECT status FROM match_rooms WHERE id = ? AND (user1_id = ? OR user2_id = ?)', (room_id, user_id, user_id))
+                c.execute('SELECT status, user1_id, user2_id FROM match_rooms WHERE id = ? AND (user1_id = ? OR user2_id = ?)', (room_id, user_id, user_id))
                 row = c.fetchone()
                 if not row or row[0] != 'ended':
                     self.send_json({'error': 'Room not ended'}, 400)
                     conn.close()
                     return
+                user1_id, user2_id = row[1], row[2]
+                rated_user_id = user2_id if user1_id == user_id else user1_id  # 获取被评价的用户ID
+                
                 c.execute('SELECT id FROM ratings WHERE room_id = ? AND rater_id = ?', (room_id, user_id))
                 if c.fetchone():
                     self.send_json({'error': 'Already rated'}, 400)
@@ -350,6 +517,11 @@ class APIHandler(BaseHTTPRequestHandler):
                     return
                 c.execute('INSERT INTO ratings (room_id, rater_id, rating, comment) VALUES (?, ?, ?, ?)', (room_id, user_id, rating, comment))
                 conn.commit()
+                conn.close()
+                
+                # 更新被评价用户的信用分
+                update_credit_score(rated_user_id)
+                
                 self.send_json({'message': 'Rating submitted'}, 200)
             except Exception as e:
                 conn.rollback()
@@ -373,6 +545,21 @@ class APIHandler(BaseHTTPRequestHandler):
                 return
             user = get_user_by_id(user_id)
             self.send_json(user, 200)
+
+        elif path == '/api/credit':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            target_user_id = params.get('user_id', [None])[0]
+            if target_user_id:
+                target_user_id = int(target_user_id)
+            else:
+                target_user_id = user_id
+            credit_info = get_credit_info(target_user_id)
+            if not credit_info:
+                self.send_json({'error': 'User not found'}, 404)
+                return
+            self.send_json(credit_info, 200)
 
         elif path == '/api/matches':
             user_id = self.require_auth()
@@ -458,6 +645,20 @@ class APIHandler(BaseHTTPRequestHandler):
                 return
             other_user = get_user_by_id(other_id)
             self.send_json({'nickname': other_user['nickname'], 'wechat': other_user['contact_wechat'], 'qq': other_user['contact_qq'], 'phone': other_user['contact_phone']}, 200)
+
+        elif path == '/api/checkin/status':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            consecutive = get_consecutive_check_ins(user_id)
+            checked_in = has_checked_in_today(user_id)
+            user = get_user_by_id(user_id)
+            self.send_json({
+                'checked_in_today': checked_in,
+                'consecutive_days': consecutive,
+                'total_coins': user['coins'],
+                'next_reward_days': 7 - (consecutive % 7) if consecutive > 0 else 7
+            }, 200)
 
         elif path == '/api/coin/balance':
             user_id = self.require_auth()

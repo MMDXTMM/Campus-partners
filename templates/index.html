@@ -43,6 +43,27 @@ body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helv
 .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 .header p { font-size: 15px; opacity: 0.95; margin-top: 4px; }
 .coin-badge { display: inline-flex; align-items: center; background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); padding: 6px 14px; border-radius: 25px; font-size: 14px; margin-top: 12px; font-weight: 500; border: 1px solid rgba(255,255,255,0.3); }
+.checkin-btn { display: inline-flex; align-items: center; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: #fff; padding: 8px 18px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; margin-left: 10px; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3); }
+.checkin-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4); }
+.checkin-btn.checked { background: #ccc; cursor: not-allowed; box-shadow: none; }
+.checkin-btn.checked:hover { transform: none; }
+.checkin-streak { display: inline-flex; align-items: center; background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 15px; font-size: 12px; margin-left: 8px; }
+.checkin-modal { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 9999; animation: fadeIn 0.3s ease; }
+.checkin-modal-content { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #fff; padding: 40px 50px; border-radius: 24px; text-align: center; max-width: 320px; width: 90%; box-shadow: 0 20px 60px rgba(102, 126, 234, 0.4); animation: slideUp 0.4s ease; }
+.checkin-modal-icon { font-size: 64px; margin-bottom: 16px; animation: bounce 1s ease infinite; }
+.checkin-modal-title { font-size: 28px; font-weight: 700; margin-bottom: 12px; }
+.checkin-modal-coins { font-size: 48px; font-weight: 800; margin: 20px 0; text-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+.checkin-modal-text { font-size: 16px; opacity: 0.9; margin-bottom: 24px; }
+.checkin-modal-btn { background: rgba(255,255,255,0.95); color: #667eea; border: none; padding: 14px 40px; border-radius: 30px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; }
+.checkin-modal-btn:hover { transform: scale(1.05); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.credit-card { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; padding: 24px; margin: 16px; color: #fff; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3); }
+.credit-title { font-size: 14px; opacity: 0.9; margin-bottom: 12px; }
+.credit-score { font-size: 56px; font-weight: 800; margin-bottom: 8px; text-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+.credit-level { display: inline-block; padding: 6px 16px; background: rgba(255,255,255,0.2); border-radius: 20px; font-size: 14px; font-weight: 600; margin-bottom: 16px; }
+.credit-stats { display: flex; justify-content: space-between; font-size: 13px; opacity: 0.85; }
 .coin-badge span { margin-right: 6px; font-size: 16px; }
 .card { background: #fff; border-radius: var(--radius-lg); padding: 20px; margin: 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200); transition: all 0.3s ease; }
 .card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
@@ -431,6 +452,46 @@ async function api(url, method='GET', data=null) {
 
 function saveToken(t) { token = t; localStorage.setItem('token', t); }
 function logout() { token = ''; currentUser = null; localStorage.removeItem('token'); showPage('pauth'); }
+
+async function loadCheckInStatus() {
+    const btn = document.getElementById('checkin-btn');
+    if (!btn) return;
+    const res = await api('/api/checkin/status');
+    if (res.error) return;
+    if (res.checked_in_today) {
+        btn.classList.add('checked');
+        btn.innerHTML = '✅ 已签到' + (res.consecutive_days > 0 ? ' <span class="checkin-streak">🔥 ' + res.consecutive_days + '天</span>' : '');
+        btn.disabled = true;
+    } else {
+        btn.innerHTML = '📅 每日签到' + (res.consecutive_days > 0 ? ' <span class="checkin-streak">🔥 ' + res.consecutive_days + '天</span>' : '');
+    }
+}
+
+async function handleCheckIn() {
+    const btn = document.getElementById('checkin-btn');
+    if (!btn || btn.disabled) return;
+    btn.disabled = true;
+    const res = await api('/api/checkin', 'POST');
+    if (res.error) {
+        btn.disabled = false;
+        return;
+    }
+    btn.classList.add('checked');
+    btn.innerHTML = '✅ 已签到 <span class="checkin-streak">🔥 ' + res.consecutive_days + '天</span>';
+    const coinsEl = document.getElementById('home-coins');
+    if (coinsEl) coinsEl.textContent = res.total_coins;
+    if (currentUser) currentUser.coins = res.total_coins;
+    
+    // 显示自定义签到成功弹窗
+    const modalHtml = '<div class="checkin-modal" id="checkin-modal"><div class="checkin-modal-content">' +
+        '<div class="checkin-modal-icon">🎉</div>' +
+        '<div class="checkin-modal-title">签到成功！</div>' +
+        '<div class="checkin-modal-coins">+' + res.coins_earned + ' 🪙</div>' +
+        '<div class="checkin-modal-text">连续签到 <span style="font-weight:700;">' + res.consecutive_days + '</span> 天</div>' +
+        '<button class="checkin-modal-btn" onclick="document.getElementById(\'checkin-modal\').remove()">收下奖励</button>' +
+        '</div></div>';
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
 
 function formatTime(timestamp) {
     const date = new Date(timestamp);
@@ -967,8 +1028,9 @@ async function renderHome() {
     recentMatches.forEach(m => {
         recentHtml += '<div class="card" style="display:flex;align-items:center;cursor:pointer;" onclick="openChat(' + m.room_id + ')">' + createAvatar(m.other_user.nickname[0], m.other_user.avatar_color) + '<div style="flex:1;margin-left:12px;"><div style="display:flex;justify-content:space-between;"><span style="font-weight:600;">' + m.other_user.nickname + '</span><span class="status-badge status-' + (m.status=='active'?'active':'ended') + '">' + (m.status=='active'?'进行中':'已结束') + '</span></div><div style="font-size:12px;color:#999;margin-top:4px;">' + (m.match_type=='random'?'随机匹配':'定向匹配') + ' ' + formatTime(m.created_at) + '</div><div style="font-size:13px;color:#666;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + m.last_message + '</div></div></div>';
     });
-    const html = '<div class="header"><h1>Hi, ' + currentUser.nickname + '</h1><p>今日份的缘分已送达 💖</p><div class="coin-badge"><span>🪙</span>' + currentUser.coins + ' 校园币</div></div>' + activeHtml + '<div class="match-card purple" onclick="startRandomMatch()"><h3>🎲 随机匹配</h3><p>消耗 1 校园币，遇见未知的缘分</p></div><div class="match-card pink" onclick="showPage(\'matchPage\')"><h3>🎯 定向匹配</h3><p>消耗 3 校园币，按条件筛选搭子</p></div><div style="padding:0 16px;"><h3 style="font-size:16px;margin-bottom:12px;">最近匹配</h3>' + (recentHtml || '<div class="empty-state"><p>暂无匹配记录</p><button class="btn btn-purple" onclick="startRandomMatch()" style="margin-top:16px;">去匹配</button></div>') + '</div>';
+    const html = '<div class="header"><h1>Hi, ' + currentUser.nickname + '</h1><p>今日份的缘分已送达 💖</p><div style="display:flex;align-items:center;flex-wrap:wrap;"><div class="coin-badge"><span>🪙</span><span id="home-coins">' + currentUser.coins + '</span> 校园币</div><button id="checkin-btn" class="checkin-btn" onclick="handleCheckIn()">📅 每日签到</button></div></div>' + activeHtml + '<div class="match-card purple" onclick="startRandomMatch()"><h3>🎲 随机匹配</h3><p>消耗 1 校园币，遇见未知的缘分</p></div><div class="match-card pink" onclick="showPage(\'matchPage\')"><h3>🎯 定向匹配</h3><p>消耗 3 校园币，按条件筛选搭子</p></div><div style="padding:0 16px;"><h3 style="font-size:16px;margin-bottom:12px;">最近匹配</h3>' + (recentHtml || '<div class="empty-state"><p>暂无匹配记录</p><button class="btn btn-purple" onclick="startRandomMatch()" style="margin-top:16px;">去匹配</button></div>') + '</div>';
     document.getElementById('app').innerHTML = wrap(html, 'home');
+    loadCheckInStatus();
 }
 
 async function startRandomMatch() {
@@ -1261,8 +1323,27 @@ async function renderHistory() {
 }
 
 async function renderProfile() {
-    const res = await api('/api/user/ratings?user_id=' + currentUser.id);
-    const ratings = res || [];
+    let ratings = [];
+    let creditInfo = { credit_score: 100, level: '🌟 优秀', total_ratings: 0, good_rate: 100 };
+    
+    try {
+        const ratingsRes = await api('/api/user/ratings?user_id=' + currentUser.id);
+        if (ratingsRes && Array.isArray(ratingsRes)) {
+            ratings = ratingsRes;
+        }
+    } catch (e) {
+        console.log('获取评价失败', e);
+    }
+    
+    try {
+        const creditRes = await api('/api/credit');
+        if (creditRes && !creditRes.error) {
+            creditInfo = creditRes;
+        }
+    } catch (e) {
+        console.log('获取信用分失败', e);
+    }
+    
     let interestsHtml = '';
     currentUser.interests.forEach(int => interestsHtml += '<span class="tag tag-purple">' + int + '</span>');
     let ratingsHtml = '';
@@ -1270,7 +1351,16 @@ async function renderProfile() {
     const goalText = {'light':'轻度','medium':'中度','heavy':'重度'};
     const rhythmText = {'early':'早起型','day':'日间型','night':'夜猫子型','flexible':'灵活型'};
     const styleText = {'compete':'竞争型','cooperate':'合作型','relaxed':'休闲型'};
+    
     let profileHtml = '<div class="header"><h1>个人资料</h1></div><div class="profile-header">' + createAvatar(currentUser.nickname[0], currentUser.avatar_color) + '<h2>' + currentUser.nickname + '</h2><p>' + (currentUser.school || '未填写学校') + '</p><div class="coin-badge" style="margin-top:10px;background:rgba(108,99,255,0.1);color:#6C63FF;"><span>🪙</span>' + currentUser.coins + ' 校园币</div></div>';
+    
+    // 信用评分卡片
+    const creditScore = creditInfo?.credit_score ?? 100;
+    const creditLevel = creditInfo?.level || '🌟 优秀';
+    const creditGoodRate = creditInfo?.good_rate ?? 100;
+    const creditTotalRatings = creditInfo?.total_ratings ?? 0;
+    profileHtml += '<div class="credit-card"><div class="credit-title">信用评分</div><div class="credit-score">' + creditScore + '</div><div class="credit-level">' + creditLevel + '</div><div class="credit-stats"><span>好评率 ' + creditGoodRate + '%</span><span>共 ' + creditTotalRatings + ' 次评价</span></div></div>';
+    
     profileHtml += '<div class="card"><h3 style="font-size:15px;margin-bottom:12px;">匹配偏好</h3><div style="display:flex;gap:8px;flex-wrap:wrap;">';
     if (currentUser.goal_intensity) profileHtml += '<span class="tag tag-purple">目标强度：' + (goalText[currentUser.goal_intensity] || currentUser.goal_intensity) + '</span>';
     if (currentUser.time_rhythm) profileHtml += '<span class="tag tag-pink">作息：' + (rhythmText[currentUser.time_rhythm] || currentUser.time_rhythm) + '</span>';
