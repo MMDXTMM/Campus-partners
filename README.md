@@ -14,7 +14,6 @@
 
 <br/>
 
-<img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=modern%20gradient%20purple%20blue%20abstract%20background%20for%20social%20app%20banner%20clean%20minimal%20design&image_size=landscape_16_9" alt="Banner" width="100%"/>
 
 </div>
 
