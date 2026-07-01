@@ -21,6 +21,28 @@ def init_db():
     c.execute('''CREATE TABLE IF NOT EXISTS ratings (id INTEGER PRIMARY KEY AUTOINCREMENT, room_id INTEGER NOT NULL, rater_id INTEGER NOT NULL, rating INTEGER NOT NULL, comment TEXT DEFAULT '', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS tokens (token TEXT PRIMARY KEY, user_id INTEGER NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
     c.execute('''CREATE TABLE IF NOT EXISTS check_ins (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, check_in_date TEXT NOT NULL, coins_earned INTEGER DEFAULT 1, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, UNIQUE(user_id, check_in_date))''')
+    c.execute('''CREATE TABLE IF NOT EXISTS reports (id INTEGER PRIMARY KEY AUTOINCREMENT, reporter_id INTEGER NOT NULL, reported_user_id INTEGER NOT NULL, room_id INTEGER NOT NULL, reason TEXT NOT NULL, status TEXT DEFAULT 'pending', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS admin_users (user_id INTEGER PRIMARY KEY)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS system_messages (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, content TEXT NOT NULL, is_read INTEGER DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+    c.execute('''CREATE TABLE IF NOT EXISTS coin_orders (id INTEGER PRIMARY KEY AUTOINCREMENT, user_id INTEGER NOT NULL, coins INTEGER NOT NULL, amount REAL NOT NULL, status TEXT DEFAULT 'pending', created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+    # 添加admin字段（如果不存在）
+    try:
+        c.execute('ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0')
+    except:
+        pass
+    # 添加封禁字段（如果不存在）
+    try:
+        c.execute('ALTER TABLE users ADD COLUMN is_banned INTEGER DEFAULT 0')
+    except:
+        pass
+    try:
+        c.execute('ALTER TABLE users ADD COLUMN banned_at TIMESTAMP')
+    except:
+        pass
+    try:
+        c.execute('ALTER TABLE users ADD COLUMN ban_reason TEXT DEFAULT ""')
+    except:
+        pass
     conn.commit()
     conn.close()
 
@@ -102,12 +124,12 @@ def do_check_in(user_id):
 def get_user_by_id(user_id):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('SELECT id,username,nickname,gender,age,school,department,grade,interests,preferences,goal_intensity,time_rhythm,interaction_style,contact_wechat,contact_qq,contact_phone,coins,credit_score,avatar_color,created_at FROM users WHERE id = ?', (user_id,))
+    c.execute('SELECT id,username,password_hash,salt,nickname,gender,age,school,department,grade,interests,preferences,goal_intensity,time_rhythm,interaction_style,contact_wechat,contact_qq,contact_phone,coins,credit_score,avatar_color,created_at,is_admin,is_banned,ban_reason FROM users WHERE id = ?', (user_id,))
     row = c.fetchone()
     conn.close()
     if not row:
         return None
-    return {'id':row[0],'username':row[1],'nickname':row[2],'gender':row[3],'age':row[4],'school':row[5],'department':row[6],'grade':row[7],'interests':json.loads(row[8]),'preferences':json.loads(row[9]),'goal_intensity':row[10],'time_rhythm':row[11],'interaction_style':row[12],'contact_wechat':row[13],'contact_qq':row[14],'contact_phone':row[15],'coins':row[16],'credit_score':row[17],'avatar_color':row[18],'created_at':row[19]}
+    return {'id':row[0],'username':row[1],'nickname':row[4],'gender':row[5],'age':row[6],'school':row[7],'department':row[8],'grade':row[9],'interests':json.loads(row[10]),'preferences':json.loads(row[11]),'goal_intensity':row[12],'time_rhythm':row[13],'interaction_style':row[14],'contact_wechat':row[15],'contact_qq':row[16],'contact_phone':row[17],'coins':row[18],'credit_score':row[19],'avatar_color':row[20],'created_at':row[21],'is_admin':row[22],'is_banned':row[23],'ban_reason':row[24]}
 
 def get_other_user_in_room(room_id, user_id):
     conn = sqlite3.connect(DB_PATH)
@@ -214,6 +236,36 @@ def get_credit_info(user_id):
         'good_rate': int((rating_stats.get(5, 0) + rating_stats.get(4, 0)) / max(total_ratings, 1) * 100) if total_ratings > 0 else 100
     }
 
+def is_admin_user(user_id):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT is_admin FROM users WHERE id = ?', (user_id,))
+    row = c.fetchone()
+    conn.close()
+    if row and row[0]:
+        return True
+    # 也检查admin_users表
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT 1 FROM admin_users WHERE user_id = ?', (user_id,))
+    row = c.fetchone()
+    conn.close()
+    return row is not None
+
+def get_matched_user_ids(user_id):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT user1_id, user2_id FROM match_rooms WHERE user1_id = ? OR user2_id = ?', (user_id, user_id))
+    rows = c.fetchall()
+    conn.close()
+    matched_ids = set()
+    for u1, u2 in rows:
+        if u1 == user_id:
+            matched_ids.add(u2)
+        else:
+            matched_ids.add(u1)
+    return matched_ids
+
 def get_matches(user_id):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
@@ -315,13 +367,18 @@ class APIHandler(BaseHTTPRequestHandler):
             if hash_password(password, salt) != stored_hash:
                 self.send_json({'error': 'Invalid credentials'}, 401)
                 return
+            # 检查是否被封禁
+            user = get_user_by_id(user_id)
+            if user.get('is_banned'):
+                ban_reason = user.get('ban_reason', '违反社区规范')
+                self.send_json({'error': f'账号已被封禁：{ban_reason}'}, 403)
+                return
             token = generate_token()
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
             c.execute('INSERT OR REPLACE INTO tokens (token, user_id) VALUES (?, ?)', (token, user_id))
             conn.commit()
             conn.close()
-            user = get_user_by_id(user_id)
             self.send_json({'token': token, 'user': user}, 200)
         elif path == '/api/matching/random':
             user_id = self.require_auth()
@@ -331,13 +388,16 @@ class APIHandler(BaseHTTPRequestHandler):
             if user['coins'] < 1:
                 self.send_json({'error': 'Insufficient coins'}, 400)
                 return
+            matched_ids = get_matched_user_ids(user_id)
+            exclude_ids = [user_id] + list(matched_ids)
+            placeholders = ','.join(['?'] * len(exclude_ids))
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
-            c.execute('SELECT id FROM users WHERE id != ? ORDER BY RANDOM() LIMIT 1', (user_id,))
+            c.execute('SELECT id FROM users WHERE id NOT IN (' + placeholders + ') ORDER BY RANDOM() LIMIT 1', exclude_ids)
             row = c.fetchone()
             conn.close()
             if not row:
-                self.send_json({'error': 'No users available'}, 400)
+                self.send_json({'error': 'No new users available'}, 400)
                 return
             other_id = row[0]
             conn = sqlite3.connect(DB_PATH)
@@ -370,10 +430,13 @@ class APIHandler(BaseHTTPRequestHandler):
             age_min = data.get('age_min', 0)
             age_max = data.get('age_max', 100)
             school = data.get('school', '')
+            matched_ids = get_matched_user_ids(user_id)
+            exclude_ids = [user_id] + list(matched_ids)
+            placeholders = ','.join(['?'] * len(exclude_ids))
             conn = sqlite3.connect(DB_PATH)
             c = conn.cursor()
-            query = 'SELECT id, interests FROM users WHERE id != ?'
-            params = [user_id]
+            query = 'SELECT id, interests FROM users WHERE id NOT IN (' + placeholders + ')'
+            params = exclude_ids
             if gender:
                 query += ' AND gender = ?'
                 params.append(gender)
@@ -399,14 +462,14 @@ class APIHandler(BaseHTTPRequestHandler):
                 if candidates:
                     other_id = candidates[0][0]
                 else:
-                    self.send_json({'error': 'No matching users'}, 400)
+                    self.send_json({'error': 'No new matching users'}, 400)
                     conn.close()
                     return
             else:
                 if rows:
                     other_id = rows[0][0]
                 else:
-                    self.send_json({'error': 'No matching users'}, 400)
+                    self.send_json({'error': 'No new matching users'}, 400)
                     conn.close()
                     return
             try:
@@ -529,6 +592,180 @@ class APIHandler(BaseHTTPRequestHandler):
             finally:
                 conn.close()
 
+        elif path == '/api/report':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            data = self.parse_body()
+            room_id = data.get('room_id')
+            reason = data.get('reason', '').strip()
+            if not room_id or not reason:
+                self.send_json({'error': 'Missing fields'}, 400)
+                return
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            try:
+                # 获取房间信息，确认用户在该房间中
+                c.execute('SELECT user1_id, user2_id FROM match_rooms WHERE id = ?', (room_id,))
+                row = c.fetchone()
+                if not row:
+                    self.send_json({'error': 'Room not found'}, 404)
+                    conn.close()
+                    return
+                user1_id, user2_id = row
+                if user_id not in [user1_id, user2_id]:
+                    self.send_json({'error': 'Not in this room'}, 403)
+                    conn.close()
+                    return
+                reported_user_id = user2_id if user1_id == user_id else user1_id
+                
+                # 检查是否已经举报过该房间
+                c.execute('SELECT id FROM reports WHERE reporter_id = ? AND room_id = ?', (user_id, room_id))
+                if c.fetchone():
+                    self.send_json({'error': 'Already reported'}, 400)
+                    conn.close()
+                    return
+                
+                c.execute('INSERT INTO reports (reporter_id, reported_user_id, room_id, reason) VALUES (?, ?, ?, ?)',
+                          (user_id, reported_user_id, room_id, reason))
+                conn.commit()
+                self.send_json({'message': '举报成功，我们会尽快处理'}, 200)
+            except Exception as e:
+                conn.rollback()
+                self.send_json({'error': str(e)}, 500)
+            finally:
+                conn.close()
+
+        elif path == '/api/coin/packages':
+            packages = [
+                {'id': 1, 'coins': 10, 'amount': 1.0, 'desc': '10 校园币', 'tag': ''},
+                {'id': 2, 'coins': 50, 'amount': 4.5, 'desc': '50 校园币', 'tag': '9折'},
+                {'id': 3, 'coins': 100, 'amount': 8.0, 'desc': '100 校园币', 'tag': '8折'},
+                {'id': 4, 'coins': 300, 'amount': 21.0, 'desc': '300 校园币', 'tag': '7折 热销'},
+                {'id': 5, 'coins': 500, 'amount': 30.0, 'desc': '500 校园币', 'tag': '6折 超值'},
+                {'id': 6, 'coins': 1000, 'amount': 50.0, 'desc': '1000 校园币', 'tag': '5折 尊享'}
+            ]
+            self.send_json(packages, 200)
+
+        elif path == '/api/coin/recharge':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            data = self.parse_body()
+            package_id = data.get('package_id')
+            packages = {
+                1: {'coins': 10, 'amount': 1.0},
+                2: {'coins': 50, 'amount': 4.5},
+                3: {'coins': 100, 'amount': 8.0},
+                4: {'coins': 300, 'amount': 21.0},
+                5: {'coins': 500, 'amount': 30.0},
+                6: {'coins': 1000, 'amount': 50.0}
+            }
+            if package_id not in packages:
+                self.send_json({'error': 'Invalid package'}, 400)
+                return
+            pkg = packages[package_id]
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            try:
+                # 创建订单（模拟支付成功）
+                c.execute('INSERT INTO coin_orders (user_id, coins, amount, status) VALUES (?, ?, ?, ?)',
+                          (user_id, pkg['coins'], pkg['amount'], 'completed'))
+                # 增加校园币
+                c.execute('UPDATE users SET coins = coins + ? WHERE id = ?', (pkg['coins'], user_id))
+                # 发送系统消息
+                c.execute('INSERT INTO system_messages (user_id, content) VALUES (?, ?)',
+                          (user_id, f'🎉 充值成功！您已成功充值 {pkg["coins"]} 校园币，快去匹配你的搭子吧~'))
+                conn.commit()
+                user = get_user_by_id(user_id)
+                self.send_json({'coins': user['coins'], 'message': '充值成功'}, 200)
+            except Exception as e:
+                conn.rollback()
+                self.send_json({'error': str(e)}, 500)
+            finally:
+                conn.close()
+
+        elif path == '/api/coin/orders':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            c.execute('SELECT id, coins, amount, status, created_at FROM coin_orders WHERE user_id = ? ORDER BY created_at DESC', (user_id,))
+            rows = c.fetchall()
+            conn.close()
+            orders = []
+            for row in rows:
+                orders.append({'id': row[0], 'coins': row[1], 'amount': row[2], 'status': row[3], 'created_at': row[4]})
+            self.send_json(orders, 200)
+
+        elif path == '/api/admin/report/process':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            if not is_admin_user(user_id):
+                self.send_json({'error': 'Unauthorized'}, 403)
+                return
+            data = self.parse_body()
+            report_id = data.get('report_id')
+            action = data.get('action', 'process')  # process or dismiss
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            try:
+                if action == 'dismiss':
+                    c.execute('UPDATE reports SET status = ? WHERE id = ?', ('dismissed', report_id))
+                else:
+                    c.execute('UPDATE reports SET status = ? WHERE id = ?', ('processed', report_id))
+                    # 获取被举报用户ID
+                    c.execute('SELECT reported_user_id FROM reports WHERE id = ?', (report_id,))
+                    row = c.fetchone()
+                    if row:
+                        reported_user_id = row[0]
+                        # 统计该用户被成功举报次数
+                        c.execute('SELECT COUNT(*) FROM reports WHERE reported_user_id = ? AND status = ?', (reported_user_id, 'processed'))
+                        processed_count = c.fetchone()[0]
+                        # 发送系统消息提醒
+                        reason_map = {
+                            'spam': '垃圾广告',
+                            'harassment': '骚扰谩骂',
+                            'fraud': '诈骗行为',
+                            'inappropriate': '不良内容',
+                            'other': '其他'
+                        }
+                        c.execute('SELECT reason FROM reports WHERE id = ?', (report_id,))
+                        reason_row = c.fetchone()
+                        reason = reason_map.get(reason_row[0], reason_row[0]) if reason_row else '违规'
+                        warn_msg = f'⚠️ 系统提醒：您因"{reason}"被举报并核实，请注意您的行为规范。目前已累计被举报{processed_count}次，累计3次将被封号。'
+                        c.execute('INSERT INTO system_messages (user_id, content) VALUES (?, ?)', (reported_user_id, warn_msg))
+                        # 累计3次封号
+                        if processed_count >= 3:
+                            c.execute('UPDATE users SET is_banned = 1, banned_at = CURRENT_TIMESTAMP, ban_reason = ? WHERE id = ?', (f'累计被举报{processed_count}次，严重违反社区规范', reported_user_id))
+                            ban_msg = '🚫 账号封禁通知：您因多次被举报且核实违规，账号已被封禁。如有疑问请联系客服。'
+                            c.execute('INSERT INTO system_messages (user_id, content) VALUES (?, ?)', (reported_user_id, ban_msg))
+                conn.commit()
+                self.send_json({'message': '处理成功'}, 200)
+            except Exception as e:
+                conn.rollback()
+                self.send_json({'error': str(e)}, 500)
+            finally:
+                conn.close()
+
+        elif path == '/api/system-messages/read':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            try:
+                c.execute('UPDATE system_messages SET is_read = 1 WHERE user_id = ?', (user_id,))
+                conn.commit()
+                self.send_json({'message': '已标记为已读'}, 200)
+            except Exception as e:
+                conn.rollback()
+                self.send_json({'error': str(e)}, 500)
+            finally:
+                conn.close()
+
         else:
             self.send_json({'error': 'Not found'}, 404)
     def do_GET(self):
@@ -545,6 +782,37 @@ class APIHandler(BaseHTTPRequestHandler):
                 return
             user = get_user_by_id(user_id)
             self.send_json(user, 200)
+
+        elif path == '/api/admin/reports':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            if not is_admin_user(user_id):
+                self.send_json({'error': 'Unauthorized'}, 403)
+                return
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            c.execute('SELECT r.id, r.reporter_id, r.reported_user_id, r.room_id, r.reason, r.status, r.created_at, u1.nickname as reporter_nickname, u2.nickname as reported_nickname FROM reports r JOIN users u1 ON r.reporter_id = u1.id JOIN users u2 ON r.reported_user_id = u2.id ORDER BY r.created_at DESC')
+            rows = c.fetchall()
+            conn.close()
+            reports = []
+            for row in rows:
+                reports.append({'id': row[0], 'reporter_id': row[1], 'reported_user_id': row[2], 'room_id': row[3], 'reason': row[4], 'status': row[5], 'created_at': row[6], 'reporter_nickname': row[7], 'reported_nickname': row[8]})
+            self.send_json(reports, 200)
+
+        elif path == '/api/system-messages':
+            user_id = self.require_auth()
+            if not user_id:
+                return
+            conn = sqlite3.connect(DB_PATH)
+            c = conn.cursor()
+            c.execute('SELECT id, content, is_read, created_at FROM system_messages WHERE user_id = ? ORDER BY created_at DESC', (user_id,))
+            rows = c.fetchall()
+            conn.close()
+            messages = []
+            for row in rows:
+                messages.append({'id': row[0], 'content': row[1], 'is_read': row[2], 'created_at': row[3]})
+            self.send_json(messages, 200)
 
         elif path == '/api/credit':
             user_id = self.require_auth()
